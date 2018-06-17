@@ -1,8 +1,6 @@
 package com.github.vatbub;
 
-import java.awt.font.NumericShaper;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -63,7 +61,7 @@ public class MathExpression implements MathLiteral {
                     parseBuffer = new StringBuffer();
                 }
                 res.add(new OperatorImplementations.DivideOperator());
-            }else if (character.equals("^")&& openBrackets==0){
+            } else if (character.equals("^") && openBrackets == 0) {
                 if (parseBuffer.length() > 0) {
                     parseNumber(parseBuffer.toString(), res);
                     parseBuffer = new StringBuffer();
@@ -75,7 +73,7 @@ public class MathExpression implements MathLiteral {
             }
         }
 
-        if (openBrackets!=0)
+        if (openBrackets != 0)
             throw new IllegalArgumentException("Unbalanced parenthesis");
 
         // parse the last number in the buffer
@@ -98,7 +96,7 @@ public class MathExpression implements MathLiteral {
     }
 
     public Number evaluate() {
-        if (getExpression().size()==0)
+        if (getExpression().size() == 0)
             throw new IllegalArgumentException("Empty expression");
 
         // eliminate any remaining MathExpressions
