@@ -43,4 +43,10 @@ public class MathExpressionTest {
         MathExpression expression = new MathExpression("   5   +     (  10  *  (   5 / ( 4 - 3 ) + 1   ) / 3 * 2 )    ");
         Assert.assertEquals(15, expression.evaluate().getValue(), 0);
     }
+
+    @Test
+    public void powerTest(){
+        MathExpression expression = new MathExpression("5^2");
+        Assert.assertEquals(25, expression.evaluate().getValue(), 0);
+    }
 }

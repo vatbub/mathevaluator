@@ -63,6 +63,12 @@ public class MathExpression implements MathLiteral {
                     parseBuffer = new StringBuffer();
                 }
                 res.add(new OperatorImplementations.DivideOperator());
+            }else if (character.equals("^")&& openBrackets==0){
+                if (parseBuffer.length() > 0) {
+                    parseNumber(parseBuffer.toString(), res);
+                    parseBuffer = new StringBuffer();
+                }
+                res.add(new OperatorImplementations.PowerOperator());
             } else {
                 // character is a number or is inside of a parenthesis
                 parseBuffer.append(character);

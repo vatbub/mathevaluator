@@ -75,4 +75,22 @@ public abstract class OperatorImplementations {
             return "*";
         }
     }
+
+    public static class PowerOperator implements Operator {
+
+        @Override
+        public Number evaluate(Number leftNumber, Number rightNumber) {
+            return new Number(Math.pow(leftNumber.getValue(), rightNumber.getValue()));
+        }
+
+        @Override
+        public int getPriority() {
+            return 4;
+        }
+
+        @Override
+        public String toString() {
+            return "^";
+        }
+    }
 }
