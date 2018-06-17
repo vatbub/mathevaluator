@@ -75,6 +75,9 @@ public class MathExpression implements MathLiteral {
             }
         }
 
+        if (openBrackets!=0)
+            throw new IllegalArgumentException("Unbalanced parenthesis");
+
         // parse the last number in the buffer
         if (parseBuffer.length() > 0)
             parseNumber(parseBuffer.toString(), res);
@@ -95,6 +98,9 @@ public class MathExpression implements MathLiteral {
     }
 
     public Number evaluate() {
+        if (getExpression().size()==0)
+            throw new IllegalArgumentException("Empty expression");
+
         // eliminate any remaining MathExpressions
         List<MathLiteral> simplifiedExpression = new ArrayList<>(getExpression().size());
 
