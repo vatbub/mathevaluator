@@ -37,7 +37,7 @@ public class Main {
             try {
                 MathExpression expression = new MathExpression(input.toValue());
                 System.out.println("The result is " + expression.evaluate().getValue());
-            }catch(IllegalArgumentException e){
+            }catch(Exception e){
                 e.printStackTrace();
             }
         }

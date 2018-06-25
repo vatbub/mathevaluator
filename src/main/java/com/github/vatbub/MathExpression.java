@@ -58,6 +58,9 @@ public class MathExpression extends MathLiteral {
 				if (openBrackets > 0) // we already have open brackets, add this
 										// one to the parse buffer
 					parseBuffer.append(character);
+				else if (parseBuffer.length()>0)
+					// there was something in the parse buffer --> implicit multiplication
+					throw new UnsupportedOperationException("Implicit multiplication is not yet supported");
 				openBrackets++;
 			} else if (character.equals(")")) {
 				if (openBrackets > 1)
