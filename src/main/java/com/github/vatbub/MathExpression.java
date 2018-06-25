@@ -32,6 +32,7 @@ public class MathExpression extends MathLiteral {
 	static {
 		OperatorImplementations.registerBuiltInOperators();
 		FunctionImplementations.registerBuiltInFunctions();
+		ConstantImplementations.registerBuiltInConstants();
 	}
 
 	public MathExpression() {
@@ -102,6 +103,24 @@ public class MathExpression extends MathLiteral {
 				}
 
 				parseBuffer.append(character);
+
+				// parse constants
+				for (Class<? extends Constant> constantClass : MathLiteral
+						.getConstants()) {
+					Constant constant;
+					try {
+						constant = constantClass.newInstance();
+					} catch (InstantiationException | IllegalAccessException e) {
+						throw new RuntimeException(e);
+					}
+					if (parseBuffer.toString().equals(
+							constant.getFormulaRepresentation())) {
+						res.add(constant);
+						parseBuffer = new StringBuffer();
+						previousElementIsNumberOrExpression = true;
+						break;
+					}
+				}
 
 				// parse operators
 				for (Class<? extends Operator> operatorClass : MathLiteral
@@ -178,6 +197,8 @@ public class MathExpression extends MathLiteral {
 				literal = ((MathExpression) literal).evaluate();
 			else if (literal instanceof Function)
 				literal = ((Function) literal).evaluate();
+			else if (literal instanceof Constant)
+				literal = ((Constant) literal).getValue();
 
 			simplifiedExpression.add(literal);
 		}

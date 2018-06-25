@@ -51,6 +51,12 @@ public abstract class MathLiteral {
 		return functions;
 	}
 	
+	public static List<Class<? extends Constant>> getConstants() {
+		if (constants == null)
+			constants = new ArrayList<>();
+		return constants;
+	}
+	
 	public static void registerOperator(Class<? extends Operator> operator){
 		getOperators().add(operator);
 	}
@@ -58,7 +64,12 @@ public abstract class MathLiteral {
 	public static void registerFunction(Class<? extends Function> function){
 		getFunctions().add(function);
 	}
+	
+	public static void registerConstant(Class<? extends Constant> constant){
+		getConstants().add(constant);
+	}
 
 	private static List<Class<? extends Operator>> operators;
 	private static List<Class<? extends Function>> functions;
+	private static List<Class<? extends Constant>> constants;
 }
