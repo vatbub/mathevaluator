@@ -1,5 +1,8 @@
 package com.github.vatbub;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /*-
  * #%L
  * math-evaluator
@@ -24,5 +27,38 @@ package com.github.vatbub;
 /**
  * Created by Kammel on 15.06.2018.
  */
-public interface MathLiteral {
+public abstract class MathLiteral {
+	public abstract String getFormulaRepresentation();
+	
+	@Override
+    public String toString() {
+        return getFormulaRepresentation();
+    }
+	
+	public int getMinimumParseBufferLength(){
+		return 1;
+	}
+	
+	public static List<Class<? extends Operator>> getOperators() {
+		if (operators==null)
+			operators = new ArrayList<>();
+		return operators;
+	}
+
+	public static List<Class<? extends Function>> getFunctions() {
+		if (functions == null)
+			functions = new ArrayList<>();
+		return functions;
+	}
+	
+	public static void registerOperator(Class<? extends Operator> operator){
+		getOperators().add(operator);
+	}
+	
+	public static void registerFunction(Class<? extends Function> function){
+		getFunctions().add(function);
+	}
+
+	private static List<Class<? extends Operator>> operators;
+	private static List<Class<? extends Function>> functions;
 }

@@ -21,8 +21,8 @@ package com.github.vatbub;
  */
 
 
-public interface Operator extends MathLiteral {
-    Number evaluate(Number leftNumber, Number rightNumber);
+public abstract class Operator extends MathLiteral {
+    public abstract Number evaluate(Number leftNumber, Number rightNumber);
 
-    int getPriority();
+    public abstract int getPriority();    
 }

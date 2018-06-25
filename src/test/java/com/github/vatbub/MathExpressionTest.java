@@ -30,7 +30,7 @@ import org.junit.Test;
 public class MathExpressionTest {
 
     @Test
-    public void simpleTest() {
+    public void simpleMultplicationTest() {
         MathExpression expression = new MathExpression("2*10");
         Assert.assertEquals(20, expression.evaluate().getValue(), 0);
     }
@@ -40,11 +40,35 @@ public class MathExpressionTest {
         MathExpression expression = new MathExpression("-2*10");
         Assert.assertEquals(-20, expression.evaluate().getValue(), 0);
     }
+    
+    @Test
+    public void simpleSubtractionTest(){
+    	MathExpression expression = new MathExpression("10-2");
+        Assert.assertEquals(8, expression.evaluate().getValue(), 0);
+    }
+    
+    @Test
+    public void simpleDivisionTest(){
+    	MathExpression expression = new MathExpression("4/2");
+        Assert.assertEquals(2, expression.evaluate().getValue(), 0);
+    }
+    
+    @Test
+    public void negativeParenthesisTest() {
+        MathExpression expression = new MathExpression("-(2+10)");
+        Assert.assertEquals(-12, expression.evaluate().getValue(), 0);
+    }
 
     @Test
     public void chainedOperationsTest() {
         MathExpression expression = new MathExpression("5+10*4/5*2+2");
         Assert.assertEquals(11, expression.evaluate().getValue(), 0);
+    }
+    
+    @Test
+    public void multiplyExpressionWithNumberTest() {
+        MathExpression expression = new MathExpression("(5+10)*4");
+        Assert.assertEquals(60, expression.evaluate().getValue(), 0);
     }
 
     @Test
@@ -63,6 +87,36 @@ public class MathExpressionTest {
     public void expressionWithSpacesTest() {
         MathExpression expression = new MathExpression("   5   +     (  10  *  (   5 / ( 4 - 3 ) + 1   ) / 3 * 2 )    ");
         Assert.assertEquals(15, expression.evaluate().getValue(), 0);
+    }
+
+    @Test
+    public void simpleSquareRootTest() {
+        MathExpression expression = new MathExpression("sqrt(4)");
+        Assert.assertEquals(2, expression.evaluate().getValue(), 0);
+    }
+    
+    @Test
+    public void nestedParenthesisWithFunctionTest() {
+        MathExpression expression = new MathExpression("5+(10*(5/(4-3)+1)/3*sqrt(4))");
+        Assert.assertEquals(15, expression.evaluate().getValue(), 0);
+    }
+    
+    @Test
+    public void squareRootWithInnerExpressionTest() {
+        MathExpression expression = new MathExpression("sqrt((5+10)*4+4)");
+        Assert.assertEquals(8, expression.evaluate().getValue(), 0);
+    }
+    
+    @Test
+    public void negatedSquareRootTest() {
+        MathExpression expression = new MathExpression("-sqrt(4)");
+        Assert.assertEquals(-2, expression.evaluate().getValue(), 0);
+    }
+    
+    @Test
+    public void squareRootOfNegativeNumberTest() {
+        MathExpression expression = new MathExpression("sqrt(-4)");
+        Assert.assertEquals(Double.NaN, expression.evaluate().getValue(), 0);
     }
 
     @Test
@@ -89,12 +143,13 @@ public class MathExpressionTest {
     @Test
     public void illegalCharacterTest() {
         String inputString = "52ß?uh;:";
-        assertThrowable(() -> new MathExpression(inputString), new NumberFormatException("For input string: \"" + inputString + "\""));
+        String expectedIllegalString = "ß?uh;:";
+        assertThrowable(() -> new MathExpression(inputString), new NumberFormatException("For input string: \"" + expectedIllegalString + "\""));
     }
 
     @Test
     public void operatorsOnlyTest() {
-        assertThrowable(() -> new MathExpression("-*^+/"), new NumberFormatException("For input string: \"-\""));
+        assertThrowable(() -> new MathExpression("-*^+/"), new NumberFormatException("For input string: \"*^+/\""));
     }
 
     private void assertFaultyExpression(String expression, String expectedMessage) {

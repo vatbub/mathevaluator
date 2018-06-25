@@ -20,98 +20,121 @@ package com.github.vatbub;
  * #L%
  */
 
-
 /**
  * Created by Kammel on 15.06.2018.
  */
 public abstract class OperatorImplementations {
-    public static class AddOperator implements Operator {
+	public static class AddOperator extends SingleArgumentOperator {
 
-        @Override
-        public Number evaluate(Number leftNumber, Number rightNumber) {
-            return new Number(leftNumber.getValue() + rightNumber.getValue());
-        }
+		@Override
+		public Number evaluate(Number leftNumber, Number rightNumber) {
+			return new Number(leftNumber.getValue() + rightNumber.getValue());
+		}
 
-        @Override
-        public int getPriority() {
-            return 0;
-        }
+		@Override
+		public int getPriority() {
+			return 0;
+		}
 
-        @Override
-        public String toString() {
-            return "+";
-        }
-    }
+		@Override
+		public String getFormulaRepresentation() {
+			return "+";
+		}
 
-    public static class SubtractOperator implements Operator {
+		@Override
+		public Number evaluate(Number argument) {
+			return argument;
+		}
+	}
 
-        @Override
-        public Number evaluate(Number leftNumber, Number rightNumber) {
-            return new Number(leftNumber.getValue() - rightNumber.getValue());
-        }
+	public static class SubtractOperator extends SingleArgumentOperator {
 
-        @Override
-        public int getPriority() {
-            return 1;
-        }
+		@Override
+		public Number evaluate(Number leftNumber, Number rightNumber) {
+			return new Number(leftNumber.getValue() - rightNumber.getValue());
+		}
 
-        @Override
-        public String toString() {
-            return "-";
-        }
-    }
+		@Override
+		public int getPriority() {
+			return 1;
+		}
 
-    public static class DivideOperator implements Operator {
+		@Override
+		public String getFormulaRepresentation() {
+			return "-";
+		}
 
-        @Override
-        public Number evaluate(Number leftNumber, Number rightNumber) {
-            return new Number(leftNumber.getValue() / rightNumber.getValue());
-        }
+		@Override
+		public int getMinimumParseBufferLength() {
+			return 2;
+		}
 
-        @Override
-        public int getPriority() {
-            return 2;
-        }
+		@Override
+		public Number evaluate(Number argument) {
+			return new Number(-argument.getValue());
+		}
+	}
 
-        @Override
-        public String toString() {
-            return "/";
-        }
-    }
+	public static class DivideOperator extends Operator {
 
-    public static class MultiplyOperator implements Operator {
+		@Override
+		public Number evaluate(Number leftNumber, Number rightNumber) {
+			return new Number(leftNumber.getValue() / rightNumber.getValue());
+		}
 
-        @Override
-        public Number evaluate(Number leftNumber, Number rightNumber) {
-            return new Number(leftNumber.getValue() * rightNumber.getValue());
-        }
+		@Override
+		public int getPriority() {
+			return 2;
+		}
 
-        @Override
-        public int getPriority() {
-            return 3;
-        }
+		@Override
+		public String getFormulaRepresentation() {
+			return "/";
+		}
+	}
 
-        @Override
-        public String toString() {
-            return "*";
-        }
-    }
+	public static class MultiplyOperator extends Operator {
 
-    public static class PowerOperator implements Operator {
+		@Override
+		public Number evaluate(Number leftNumber, Number rightNumber) {
+			return new Number(leftNumber.getValue() * rightNumber.getValue());
+		}
 
-        @Override
-        public Number evaluate(Number leftNumber, Number rightNumber) {
-            return new Number(Math.pow(leftNumber.getValue(), rightNumber.getValue()));
-        }
+		@Override
+		public int getPriority() {
+			return 3;
+		}
 
-        @Override
-        public int getPriority() {
-            return 4;
-        }
+		@Override
+		public String getFormulaRepresentation() {
+			return "*";
+		}
+	}
 
-        @Override
-        public String toString() {
-            return "^";
-        }
-    }
+	public static class PowerOperator extends Operator {
+
+		@Override
+		public Number evaluate(Number leftNumber, Number rightNumber) {
+			return new Number(Math.pow(leftNumber.getValue(),
+					rightNumber.getValue()));
+		}
+
+		@Override
+		public int getPriority() {
+			return 4;
+		}
+
+		@Override
+		public String getFormulaRepresentation() {
+			return "^";
+		}
+	}
+
+	public static void registerBuiltInOperators() {
+		MathLiteral.registerOperator(AddOperator.class);
+		MathLiteral.registerOperator(SubtractOperator.class);
+		MathLiteral.registerOperator(DivideOperator.class);
+		MathLiteral.registerOperator(MultiplyOperator.class);
+		MathLiteral.registerOperator(PowerOperator.class);
+	}
 }

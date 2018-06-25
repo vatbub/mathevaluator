@@ -20,160 +20,242 @@ package com.github.vatbub;
  * #L%
  */
 
-
 import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Created by Kammel on 15.06.2018.
  */
-public class MathExpression implements MathLiteral {
-    private List<MathLiteral> expression;
+public class MathExpression extends MathLiteral {
+	private List<MathLiteral> expression;
 
-    public MathExpression() {
-        setExpression(null);
-    }
+	static {
+		OperatorImplementations.registerBuiltInOperators();
+		FunctionImplementations.registerBuiltInFunctions();
+	}
 
-    public MathExpression(String expression) {
-        parse(expression);
-    }
+	public MathExpression() {
+		setExpression(null);
+	}
 
-    private void parse(String expression) {
-        expression = expression.replaceAll(" ", "");
-        StringBuffer parseBuffer = new StringBuffer();
-        List<MathLiteral> res = new ArrayList<>(expression.length());
-        int openBrackets = 0;
+	public MathExpression(String expression) {
+		parse(expression);
+	}
 
-        for (int i = 0; i < expression.length(); i++) {
-            String character = expression.substring(i, i + 1);
-            if (character.equals("(")) {
-                if (openBrackets > 0) // we already have open brackets, add this one to the parse buffer
-                    parseBuffer.append(character);
-                openBrackets++;
-            } else if (character.equals(")")) {
-                if (openBrackets > 1)
-                    parseBuffer.append(character);
+	private void parse(String expression) {
+		expression = expression.replaceAll(" ", "");
+		StringBuffer parseBuffer = new StringBuffer();
+		List<MathLiteral> res = new ArrayList<>(expression.length());
+		int openBrackets = 0;
+		boolean previousElementIsNumberOrExpression = false;
+		Function pendingFunction = null;
 
-                openBrackets--;
+		for (int i = 0; i < expression.length(); i++) {
+			String character = expression.substring(i, i + 1);
 
-                if (openBrackets == 0) {
-                    res.add(new MathExpression(parseBuffer.toString()));
-                    parseBuffer = new StringBuffer();
-                }
-            } else if (character.equals("+") && openBrackets == 0) {
-                if (parseBuffer.length() > 0) {
-                    parseNumber(parseBuffer.toString(), res);
-                    parseBuffer = new StringBuffer();
-                }
-                res.add(new OperatorImplementations.AddOperator());
-            } else if (character.equals("-") && openBrackets == 0 && parseBuffer.length() > 0) {
-                parseNumber(parseBuffer.toString(), res);
-                parseBuffer = new StringBuffer();
-                res.add(new OperatorImplementations.SubtractOperator());
-            } else if (character.equals("*") && openBrackets == 0) {
-                if (parseBuffer.length() > 0) {
-                    parseNumber(parseBuffer.toString(), res);
-                    parseBuffer = new StringBuffer();
-                }
-                res.add(new OperatorImplementations.MultiplyOperator());
-            } else if (character.equals("/") && openBrackets == 0) {
-                if (parseBuffer.length() > 0) {
-                    parseNumber(parseBuffer.toString(), res);
-                    parseBuffer = new StringBuffer();
-                }
-                res.add(new OperatorImplementations.DivideOperator());
-            } else if (character.equals("^") && openBrackets == 0) {
-                if (parseBuffer.length() > 0) {
-                    parseNumber(parseBuffer.toString(), res);
-                    parseBuffer = new StringBuffer();
-                }
-                res.add(new OperatorImplementations.PowerOperator());
-            } else {
-                // character is a number or is inside of a parenthesis
-                parseBuffer.append(character);
-            }
-        }
+			if (character.equals("(")) {
+				if (openBrackets > 0) // we already have open brackets, add this
+										// one to the parse buffer
+					parseBuffer.append(character);
+				openBrackets++;
+			} else if (character.equals(")")) {
+				if (openBrackets > 1)
+					parseBuffer.append(character);
 
-        if (openBrackets != 0)
-            throw new IllegalArgumentException("Unbalanced parenthesis");
+				openBrackets--;
 
-        // parse the last number in the buffer
-        if (parseBuffer.length() > 0)
-            parseNumber(parseBuffer.toString(), res);
+				if (openBrackets == 0) {
+					if (pendingFunction != null) {
+						String[] params = parseBuffer.toString().split(",");
+						List<MathExpression> parsedParams = new ArrayList<>();
 
-        setExpression(res);
-    }
+						for (String param : params)
+							parsedParams.add(new MathExpression(param));
 
-    private void parseNumber(String number, List<MathLiteral> expressionToAddNumberTo) {
-        expressionToAddNumberTo.add(new Number(Double.parseDouble(number)));
-    }
+						pendingFunction.setParams(parsedParams);
+						res.add(pendingFunction);
+						pendingFunction = null;
+					} else {
+						res.add(new MathExpression(parseBuffer.toString()));
+					}
+					parseBuffer = new StringBuffer();
+					previousElementIsNumberOrExpression = true;
+				}
+			} else if (openBrackets > 0) {
+				parseBuffer.append(character);
+				previousElementIsNumberOrExpression = false;
+			} else if (pendingFunction != null) {
+				// pending function is null but openBrackets == 0 --> functions
+				// require parenthesis to declare arguments
+				throw new IllegalArgumentException(
+						"Function names must be followed by parenthesis to declare the function parameters");
+			} else {
+				if (Number.isParsableDouble(parseBuffer.toString())
+						&& !Number.isParsableDouble(parseBuffer.toString()
+								+ character)) {
+					// parseBuffer was previously parsable as a double but when
+					// adding the current char, it becomes unparsable --> we
+					// need to parse the number now
+					parseNumber(parseBuffer.toString(), res);
+					parseBuffer = new StringBuffer();
+					previousElementIsNumberOrExpression = true;
+				}
 
-    public List<MathLiteral> getExpression() {
-        return expression;
-    }
+				parseBuffer.append(character);
 
-    public void setExpression(List<MathLiteral> expression) {
-        this.expression = expression;
-    }
+				// parse operators
+				for (Class<? extends Operator> operatorClass : MathLiteral
+						.getOperators()) {
+					Operator operator;
+					try {
+						operator = operatorClass.newInstance();
+					} catch (InstantiationException | IllegalAccessException e) {
+						throw new RuntimeException(e);
+					}
+					if (parseBuffer.toString().equals(
+							operator.getFormulaRepresentation())
+							&& (previousElementIsNumberOrExpression || operator instanceof SingleArgumentOperator)) {
+						res.add(operator);
+						parseBuffer = new StringBuffer();
+						previousElementIsNumberOrExpression = false;
+						break;
+					}
+				}
 
-    public Number evaluate() {
-        if (getExpression().size() == 0)
-            throw new IllegalArgumentException("Empty expression");
+				// parse functions
+				for (Class<? extends Function> functionClass : MathLiteral
+						.getFunctions()) {
+					Function function;
+					try {
+						function = functionClass.newInstance();
+					} catch (InstantiationException | IllegalAccessException e) {
+						throw new RuntimeException(e);
+					}
+					if (parseBuffer.toString().equals(
+							function.getFormulaRepresentation())) {
+						pendingFunction = function;
+						parseBuffer = new StringBuffer();
+						previousElementIsNumberOrExpression = false;
+						break;
+					}
+				}
+			}
+		}
 
-        // eliminate any remaining MathExpressions
-        List<MathLiteral> simplifiedExpression = new ArrayList<>(getExpression().size());
+		if (openBrackets != 0)
+			throw new IllegalArgumentException("Unbalanced parenthesis");
 
-        for (MathLiteral literal : getExpression()) {
-            if (literal instanceof MathExpression)
-                literal = ((MathExpression) literal).evaluate();
+		// parse the last number in the buffer
+		if (parseBuffer.length() > 0)
+			parseNumber(parseBuffer.toString(), res);
 
-            simplifiedExpression.add(literal);
-        }
+		setExpression(res);
+	}
 
-        // our expression now only contains numbers and operators
+	private void parseNumber(String number,
+			List<MathLiteral> expressionToAddNumberTo) {
+		expressionToAddNumberTo.add(new Number(Double.parseDouble(number)));
+	}
 
-        while (simplifiedExpression.size() > 1) {
-            // find the operator with the highest priority
-            int indexOfOperatorWithHighestPriority = Integer.MIN_VALUE;
-            for (int i = 0; i < simplifiedExpression.size(); i++) {
-                MathLiteral literal = simplifiedExpression.get(i);
-                if (!(literal instanceof Operator)) continue;
+	public List<MathLiteral> getExpression() {
+		return expression;
+	}
 
-                if (indexOfOperatorWithHighestPriority == Integer.MIN_VALUE)
-                    indexOfOperatorWithHighestPriority = i;
-                else {
-                    Operator operator = (Operator) literal;
-                    if (operator.getPriority() > ((Operator) simplifiedExpression.get(indexOfOperatorWithHighestPriority)).getPriority())
-                        indexOfOperatorWithHighestPriority = i;
-                }
-            }
+	public void setExpression(List<MathLiteral> expression) {
+		this.expression = expression;
+	}
 
-            Number left = (Number) simplifiedExpression.get(indexOfOperatorWithHighestPriority - 1);
-            Operator operator = (Operator) simplifiedExpression.get(indexOfOperatorWithHighestPriority);
-            Number right = (Number) simplifiedExpression.get(indexOfOperatorWithHighestPriority + 1);
+	public Number evaluate() {
+		if (getExpression().size() == 0)
+			throw new IllegalArgumentException("Empty expression");
 
-            simplifiedExpression.set(indexOfOperatorWithHighestPriority - 1, operator.evaluate(left, right));
+		// eliminate any remaining MathExpressions
+		List<MathLiteral> simplifiedExpression = new ArrayList<>(
+				getExpression().size());
 
-            simplifiedExpression.remove(indexOfOperatorWithHighestPriority + 1);
-            simplifiedExpression.remove(indexOfOperatorWithHighestPriority);
-        }
+		for (MathLiteral literal : getExpression()) {
+			if (literal instanceof MathExpression)
+				literal = ((MathExpression) literal).evaluate();
+			else if (literal instanceof Function)
+				literal = ((Function) literal).evaluate();
 
-        return (Number) simplifiedExpression.get(0);
-    }
+			simplifiedExpression.add(literal);
+		}
 
-    @Override
-    public String toString() {
-        StringBuilder builder = new StringBuilder();
-        for (MathLiteral literal : getExpression()) {
-            builder.append(" ");
-            if (literal instanceof MathExpression)
-                builder.append("(").append(literal.toString()).append(")");
-            else
-                builder.append(literal.toString());
+		// our expression now only contains numbers and operators
 
-            builder.append(" ");
-        }
+		while (simplifiedExpression.size() > 1) {
+			// find the operator with the highest priority
+			int indexOfOperatorWithHighestPriority = Integer.MIN_VALUE;
+			for (int i = 0; i < simplifiedExpression.size(); i++) {
+				MathLiteral literal = simplifiedExpression.get(i);
+				if (!(literal instanceof Operator))
+					continue;
 
-        return builder.toString();
-    }
+				if (indexOfOperatorWithHighestPriority == Integer.MIN_VALUE)
+					indexOfOperatorWithHighestPriority = i;
+				else {
+					Operator operator = (Operator) literal;
+					if (operator.getPriority() > ((Operator) simplifiedExpression
+							.get(indexOfOperatorWithHighestPriority))
+							.getPriority())
+						indexOfOperatorWithHighestPriority = i;
+				}
+			}
+
+			if ((indexOfOperatorWithHighestPriority - 1 < 0 || simplifiedExpression
+					.get(indexOfOperatorWithHighestPriority - 1) instanceof Operator)
+					&& simplifiedExpression
+							.get(indexOfOperatorWithHighestPriority) instanceof SingleArgumentOperator) {
+				SingleArgumentOperator operator = (SingleArgumentOperator) simplifiedExpression
+						.get(indexOfOperatorWithHighestPriority);
+				Number right = (Number) simplifiedExpression
+						.get(indexOfOperatorWithHighestPriority + 1);
+				simplifiedExpression.set(indexOfOperatorWithHighestPriority,
+						operator.evaluate(right));
+
+				simplifiedExpression
+						.remove(indexOfOperatorWithHighestPriority + 1);
+			} else {
+
+				Number left = (Number) simplifiedExpression
+						.get(indexOfOperatorWithHighestPriority - 1);
+				Operator operator = (Operator) simplifiedExpression
+						.get(indexOfOperatorWithHighestPriority);
+				Number right = (Number) simplifiedExpression
+						.get(indexOfOperatorWithHighestPriority + 1);
+
+				simplifiedExpression.set(
+						indexOfOperatorWithHighestPriority - 1,
+						operator.evaluate(left, right));
+
+				simplifiedExpression
+						.remove(indexOfOperatorWithHighestPriority + 1);
+				simplifiedExpression.remove(indexOfOperatorWithHighestPriority);
+			}
+		}
+
+		return (Number) simplifiedExpression.get(0);
+	}
+
+	@Override
+	public String toString() {
+		return getFormulaRepresentation();
+	}
+
+	@Override
+	public String getFormulaRepresentation() {
+		StringBuilder builder = new StringBuilder();
+		for (MathLiteral literal : getExpression()) {
+			builder.append(" ");
+			if (literal instanceof MathExpression)
+				builder.append("(").append(literal.toString()).append(")");
+			else
+				builder.append(literal.toString());
+
+			builder.append(" ");
+		}
+
+		return builder.toString();
+	}
 }
