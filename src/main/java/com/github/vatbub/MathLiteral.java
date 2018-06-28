@@ -35,10 +35,6 @@ public abstract class MathLiteral {
         return getFormulaRepresentation();
     }
 	
-	public int getMinimumParseBufferLength(){
-		return 1;
-	}
-	
 	public static List<Class<? extends Operator>> getOperators() {
 		if (operators==null)
 			operators = new ArrayList<>();
@@ -56,17 +52,29 @@ public abstract class MathLiteral {
 			constants = new ArrayList<>();
 		return constants;
 	}
-	
+
 	public static void registerOperator(Class<? extends Operator> operator){
 		getOperators().add(operator);
 	}
-	
+
 	public static void registerFunction(Class<? extends Function> function){
 		getFunctions().add(function);
 	}
-	
+
 	public static void registerConstant(Class<? extends Constant> constant){
 		getConstants().add(constant);
+	}
+
+    public static boolean deregisterOperator(Class<? extends Operator> operator){
+		return getOperators().remove(operator);
+	}
+
+    public static boolean deregisterFunction(Class<? extends Function> function){
+		return getFunctions().remove(function);
+	}
+
+    public static boolean deregisterConstant(Class<? extends Constant> constant){
+        return getConstants().remove(constant);
 	}
 
 	private static List<Class<? extends Operator>> operators;

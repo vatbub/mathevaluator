@@ -59,7 +59,7 @@ public class MathExpression extends MathLiteral {
                 if (openBrackets > 0) // we already have open brackets, add this
                     // one to the parse buffer
                     parseBuffer.append(character);
-                else if (parseBuffer.length() > 0)
+                else if (parseBuffer.length() > 0 || isLastElementANumberOrExpression(res))
                     // there was something in the parse buffer --> implicit multiplication
                     throw new UnsupportedOperationException("Implicit multiplication is not yet supported");
                 openBrackets++;
@@ -170,10 +170,10 @@ public class MathExpression extends MathLiteral {
     }
 
     private boolean isLastElementANumberOrExpression(@NotNull List<MathLiteral> expression) {
-		if (expression.size()==0)
-		    return false;
-		MathLiteral lastElement = expression.get(expression.size()-1);
-		return lastElement instanceof Number || lastElement instanceof MathExpression;
+        if (expression.size() == 0)
+            return false;
+        MathLiteral lastElement = expression.get(expression.size() - 1);
+        return lastElement instanceof Number || lastElement instanceof MathExpression || lastElement instanceof Constant;
     }
 
     private void parseNumber(String number,

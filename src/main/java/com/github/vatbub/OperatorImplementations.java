@@ -65,11 +65,6 @@ public abstract class OperatorImplementations {
 		}
 
 		@Override
-		public int getMinimumParseBufferLength() {
-			return 2;
-		}
-
-		@Override
 		public Number evaluate(Number argument) {
 			return new Number(-argument.getValue());
 		}
