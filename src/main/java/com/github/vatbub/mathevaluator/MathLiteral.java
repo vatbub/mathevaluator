@@ -25,7 +25,9 @@ import java.util.List;
 
 
 /**
- * Created by Kammel on 15.06.2018.
+ * Represents any mathematical item. A literal can be an {@link Operator}, a {@link Number} or a {@link Function}.
+ * A {@link MathExpression} is a collection of {@link MathLiteral}s but it's also a {@link MathLiteral} itself
+ * (which allows {@link MathExpression}s to be nested e. g. using parenthesis)
  */
 public abstract class MathLiteral {
 	public abstract String getFormulaRepresentation();

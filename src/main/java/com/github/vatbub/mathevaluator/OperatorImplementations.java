@@ -21,7 +21,7 @@ package com.github.vatbub.mathevaluator;
  */
 
 /**
- * Created by Kammel on 15.06.2018.
+ * Built-in operators
  */
 public abstract class OperatorImplementations {
 	public static class AddOperator extends SingleArgumentOperator {

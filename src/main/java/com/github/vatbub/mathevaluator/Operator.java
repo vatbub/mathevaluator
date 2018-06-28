@@ -20,9 +20,24 @@ package com.github.vatbub.mathevaluator;
  * #L%
  */
 
-
+/**
+ * Represents a mathematical operator which can handle two inputs (e. g. {@code 5 + 2})
+ */
 public abstract class Operator extends MathLiteral {
     public abstract Number evaluate(Number leftNumber, Number rightNumber);
 
+    /**
+     * Specifies the order in which operators are evaluated. Operators with a higher integer value will be evaluated first.
+     * The priorities of the built-in operators are:
+     * <ul>
+     *     <li>+: 0</li>
+     *     <li>-: 1</li>
+     *     <li>*: 2</li>
+     *     <li>/: 3</li>
+     *     <li>^: 4</li>
+     * </ul>
+     * Please avoid operators with colliding priorities as the behaviour is undefined for that case.
+     * @return The priority of the operator.
+     */
     public abstract int getPriority();    
 }

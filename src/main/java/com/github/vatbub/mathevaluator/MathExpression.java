@@ -9,9 +9,9 @@ package com.github.vatbub.mathevaluator;
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -26,7 +26,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by Kammel on 15.06.2018.
+ * Represents a mathematical term.
+ * Use {@link #MathExpression(String)} to parse a string and {@link #evaluate()} to evaluate the expression.
  */
 public class MathExpression extends MathLiteral {
     static {
@@ -37,10 +38,18 @@ public class MathExpression extends MathLiteral {
 
     private List<MathLiteral> expression;
 
+    /**
+     * Initializes an empty expression
+     */
     public MathExpression() {
         setExpression(null);
     }
 
+    /**
+     * Parses the specified term and returns its object representation
+     *
+     * @param expression
+     */
     public MathExpression(String expression) {
         parse(expression);
     }
@@ -181,14 +190,39 @@ public class MathExpression extends MathLiteral {
         expressionToAddNumberTo.add(new Number(Double.parseDouble(number)));
     }
 
+    /**
+     * Returns the list of {@link MathLiteral}s that this expression consists of. Usually, the returned expression consists of:
+     * <ul>
+     * <li>{@link Number}s</li>
+     * <li>{@link MathExpression}s</li>
+     * <li>{@link Function}s and</li>
+     * <li>{@link Constant}s</li>
+     * </ul>
+     * ... which are separated by {@link Operator}s.
+     *
+     * @return The list of {@link MathLiteral}s that this expression consists of
+     */
     public List<MathLiteral> getExpression() {
         return expression;
     }
 
+    /**
+     * Sets the expression represented by this object. This method DOES NOT check the supplied expression for errors.
+     *
+     * @param expression The expression to set.
+     */
     public void setExpression(List<MathLiteral> expression) {
         this.expression = expression;
     }
 
+    /**
+     * Evaluates this expression. Please note: The evaluation is performed using a copy of {@link #getExpression()} to avoid
+     * modifications of the original expression.
+     * If this expression contains other expressions, they will be evaluated recursively.
+     *
+     * @return The result of this expression.
+     * @throws ArrayIndexOutOfBoundsException if this expression fails to evaluate
+     */
     public Number evaluate() {
         if (getExpression().size() == 0)
             throw new IllegalArgumentException("Empty expression");
