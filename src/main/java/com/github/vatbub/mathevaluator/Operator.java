@@ -31,10 +31,10 @@ public abstract class Operator extends MathLiteral {
      * The priorities of the built-in operators are:
      * <ul>
      *     <li>+: 0</li>
-     *     <li>-: 1</li>
-     *     <li>*: 2</li>
-     *     <li>/: 3</li>
-     *     <li>^: 4</li>
+     *     <li>-: 100</li>
+     *     <li>*: 200</li>
+     *     <li>/: 300</li>
+     *     <li>^: 400</li>
      * </ul>
      * Please avoid operators with colliding priorities as the behaviour is undefined for that case.
      * @return The priority of the operator.

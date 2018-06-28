@@ -21,8 +21,6 @@ package com.github.vatbub.mathevaluator;
  */
 
 
-import com.github.vatbub.mathevaluator.Number;
-import com.github.vatbub.mathevaluator.OperatorImplementations;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -77,7 +75,7 @@ public class OperatorImplementationsTest {
 
     @Test
     public void subtractPriorityTest() {
-        Assert.assertEquals(1, new OperatorImplementations.SubtractOperator().getPriority());
+        Assert.assertEquals(100, new OperatorImplementations.SubtractOperator().getPriority());
     }
 
     @Test
@@ -97,7 +95,7 @@ public class OperatorImplementationsTest {
 
     @Test
     public void dividePriorityTest() {
-        Assert.assertEquals(2, new OperatorImplementations.DivideOperator().getPriority());
+        Assert.assertEquals(200, new OperatorImplementations.DivideOperator().getPriority());
     }
 
     @Test
@@ -117,7 +115,7 @@ public class OperatorImplementationsTest {
 
     @Test
     public void multiplyPriorityTest() {
-        Assert.assertEquals(3, new OperatorImplementations.MultiplyOperator().getPriority());
+        Assert.assertEquals(300, new OperatorImplementations.MultiplyOperator().getPriority());
     }
 
     @Test
@@ -137,7 +135,7 @@ public class OperatorImplementationsTest {
 
     @Test
     public void powerPriorityTest() {
-        Assert.assertEquals(4, new OperatorImplementations.PowerOperator().getPriority());
+        Assert.assertEquals(400, new OperatorImplementations.PowerOperator().getPriority());
     }
 
     @Test

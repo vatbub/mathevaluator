@@ -56,7 +56,7 @@ public abstract class OperatorImplementations {
 
 		@Override
 		public int getPriority() {
-			return 1;
+			return 100;
 		}
 
 		@Override
@@ -79,7 +79,7 @@ public abstract class OperatorImplementations {
 
 		@Override
 		public int getPriority() {
-			return 2;
+			return 200;
 		}
 
 		@Override
@@ -97,7 +97,7 @@ public abstract class OperatorImplementations {
 
 		@Override
 		public int getPriority() {
-			return 3;
+			return 300;
 		}
 
 		@Override
@@ -116,7 +116,7 @@ public abstract class OperatorImplementations {
 
 		@Override
 		public int getPriority() {
-			return 4;
+			return 400;
 		}
 
 		@Override
