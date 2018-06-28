@@ -30,7 +30,7 @@ public class Main {
     public static final String exitInput = "exit";
     public static void main(String[] args) throws ParseException {
         while(true){
-            Prompt prompt = new Prompt("Please enter your math expression (enter an empty expression to exit)", new ParsableString(exitInput));
+            Prompt prompt = new Prompt("Please enter your math expression (Hit Ctrl+C or type 'exit' to quit the program)", new ParsableString(exitInput));
             ParsableString input = (ParsableString) prompt.doPrompt();
             if (input.toValue().equals(exitInput))
                 break;
