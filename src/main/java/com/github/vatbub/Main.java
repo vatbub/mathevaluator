@@ -24,6 +24,7 @@ package com.github.vatbub;
 import com.github.vatbub.commandlineUserPromptProcessor.Prompt;
 import com.github.vatbub.commandlineUserPromptProcessor.parsables.ParsableString;
 import com.github.vatbub.commandlineUserPromptProcessor.parsables.ParseException;
+import com.github.vatbub.mathevaluator.MathExpression;
 
 public class Main {
     public static final String exitInput = "exit";

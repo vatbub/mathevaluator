@@ -1,4 +1,4 @@
-package com.github.vatbub;
+package com.github.vatbub.mathevaluator;
 
 import java.util.regex.Pattern;
 

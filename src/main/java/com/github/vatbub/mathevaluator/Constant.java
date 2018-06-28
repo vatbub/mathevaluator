@@ -1,4 +1,4 @@
-package com.github.vatbub;
+package com.github.vatbub.mathevaluator;
 
 /*-
  * #%L
@@ -21,6 +21,6 @@ package com.github.vatbub;
  */
 
 
-public abstract class SingleArgumentOperator extends Operator {
-	public abstract Number evaluate(Number argument);
+public abstract class Constant extends MathLiteral {
+	public abstract Number getValue();
 }
