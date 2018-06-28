@@ -12,7 +12,7 @@ public abstract class Function extends MathLiteral {
 							+ getParams().size()
 							+ ", minimum number of arguments: "
 							+ this.getMinNumberOfArguments());
-		if (getParams().size() > getMinNumberOfArguments())
+		if (getParams().size() > getMaxNumberOfArguments())
 			throw new IllegalArgumentException(
 					"Too many arguments for function "
 							+ this.getFormulaRepresentation()
