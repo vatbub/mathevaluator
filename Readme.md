@@ -36,7 +36,7 @@ double result =  expression.evaluate().getValue();
 ```
 
 ## Extending the parser
-The parser is built in a modular way which allows it to be extended. If you wih to implement your own operators, constants or functions, just do the following:
+The parser is built in a modular way which allows it to be extended. If you wish to implement your own operators, constants or functions, just do the following:
 
 1. Create a class which extends `Function`, `Constant` or `Operator` (*)
 2. Implement all the abstract methods
