@@ -68,7 +68,7 @@ public class MathExpression extends MathLiteral {
                 if (openBrackets > 0) // we already have open brackets, add this
                     // one to the parse buffer
                     parseBuffer.append(character);
-                else if (parseBuffer.length() > 0 || isLastElementANumberOrExpression(res))
+                else if (parseBuffer.length() > 0 || isLastElementANumberOrExpressionOrFunction(res))
                     // there was something in the parse buffer --> implicit multiplication
                     throw new UnsupportedOperationException("Implicit multiplication is not yet supported");
                 openBrackets++;
@@ -142,7 +142,7 @@ public class MathExpression extends MathLiteral {
                     }
                     if (parseBuffer.toString().equals(
                             operator.getFormulaRepresentation())
-                            && (operator instanceof SingleArgumentOperator || isLastElementANumberOrExpression(res))) {
+                            && (operator instanceof SingleArgumentOperator || isLastElementANumberOrExpressionOrFunction(res))) {
                         res.add(operator);
                         parseBuffer = new StringBuffer();
                         break;
@@ -178,17 +178,17 @@ public class MathExpression extends MathLiteral {
         setExpression(res);
     }
 
-    private boolean isLastElementANumberOrExpression(@NotNull List<MathLiteral> expression) {
+    private boolean isLastElementANumberOrExpressionOrFunction(@NotNull List<MathLiteral> expression) {
         if (expression.size() == 0)
             return false;
-        return isElementANumberOrExpression(expression, expression.size() - 1);
+        return isElementANumberOrExpressionOrFunction(expression, expression.size() - 1);
     }
 
-    private boolean isElementANumberOrExpression(@NotNull List<MathLiteral> expression, int index) {
+    private boolean isElementANumberOrExpressionOrFunction(@NotNull List<MathLiteral> expression, int index) {
         if (expression.size() == 0)
             return false;
         MathLiteral element = expression.get(index);
-        return element instanceof Number || element instanceof MathExpression || element instanceof Constant;
+        return element instanceof Number || element instanceof MathExpression || element instanceof Constant || element instanceof Function;
     }
 
     private void parseNumber(String number,
@@ -263,7 +263,7 @@ public class MathExpression extends MathLiteral {
                 else {
                     Operator operator = (Operator) literal;
                     if (operator.getPriority() > ((Operator) simplifiedExpression.get(indexOfOperatorWithHighestPriority)).getPriority()
-                            || (getOperatorSuperclassPriority(operator) > getOperatorSuperclassPriority((Operator) simplifiedExpression.get(indexOfOperatorWithHighestPriority)) && !isElementANumberOrExpression(simplifiedExpression, i - 1)))
+                            || (getOperatorSuperclassPriority(operator) > getOperatorSuperclassPriority((Operator) simplifiedExpression.get(indexOfOperatorWithHighestPriority)) && !isElementANumberOrExpressionOrFunction(simplifiedExpression, i - 1)))
                         indexOfOperatorWithHighestPriority = i;
                 }
             }
