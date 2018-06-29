@@ -26,22 +26,22 @@ import org.junit.Test;
 
 public class ConstantImplementationTest {
     @Test
-    public void piValueTest(){
+    public void piValueTest() {
         Assert.assertEquals(Math.PI, new ConstantImplementations.PiConstant().getValue().getValue(), 10e-10);
     }
 
     @Test
-    public void eValueTest(){
+    public void eValueTest() {
         Assert.assertEquals(Math.E, new ConstantImplementations.EConstant().getValue().getValue(), 10e-10);
     }
 
     @Test
-    public void piRepresentationTest(){
+    public void piRepresentationTest() {
         Assert.assertEquals("pi", new ConstantImplementations.PiConstant().getFormulaRepresentation());
     }
 
     @Test
-    public void eRepresentationTest(){
+    public void eRepresentationTest() {
         Assert.assertEquals("e", new ConstantImplementations.EConstant().getFormulaRepresentation());
     }
 }

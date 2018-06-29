@@ -21,7 +21,6 @@ package com.github.vatbub.mathevaluator;
  */
 
 
-import com.github.vatbub.mathevaluator.Number;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -34,14 +33,14 @@ public class NumberTest {
 
     @Test
     public void valueConstructorTest() {
-        double[] inputs = {0, 1.25, 23456.8, -1};
+        final double[] inputs = {0, 1.25, 23456.8, -1};
         for (double input : inputs)
             Assert.assertEquals(input, new Number(input).getValue(), 0);
     }
 
     @Test
     public void setValueTest() {
-        double[] inputs = {0, 1.25, 23456.8, -1};
+        final double[] inputs = {0, 1.25, 23456.8, -1};
         for (double input : inputs) {
             Number number = new Number();
             number.setValue(input);
@@ -50,24 +49,24 @@ public class NumberTest {
     }
 
     @Test
-    public void representationTest(){
-        double[] inputs = {0, 1.25, 23456.8, -1};
+    public void representationTest() {
+        final double[] inputs = {0, 1.25, 23456.8, -1};
         for (double input : inputs)
             Assert.assertEquals(Double.toString(input), new Number(input).getFormulaRepresentation());
     }
 
     @Test
-    public void toStringTest(){
-        double[] inputs = {0, 1.25, 23456.8, -1};
+    public void toStringTest() {
+        final double[] inputs = {0, 1.25, 23456.8, -1};
         for (double input : inputs)
             Assert.assertEquals(Double.toString(input), new Number(input).toString());
     }
 
     @Test
-    public void isParsableTest(){
-        String[] inputs = {"687.4", "623,9", "*9653", "65467ü", "468.1e10", "134f"};
+    public void isParsableTest() {
+        final String[] inputs = {"687.4", "623,9", "*9653", "65467ü", "468.1e10", "134f"};
         boolean[] expected = {true, false, false, false, true, true};
-        for (int i=0; i<inputs.length; i++) {
+        for (int i = 0; i < inputs.length; i++) {
             System.out.println("Testing string: \"" + inputs[i] + "\"");
             Assert.assertEquals(expected[i], Number.isParsableDouble(inputs[i]));
         }

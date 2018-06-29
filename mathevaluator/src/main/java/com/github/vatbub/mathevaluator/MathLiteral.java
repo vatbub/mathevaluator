@@ -30,56 +30,59 @@ import java.util.List;
  * (which allows {@link MathExpression}s to be nested e. g. using parenthesis)
  */
 public abstract class MathLiteral {
-	public abstract String getFormulaRepresentation();
-	
-	@Override
+    private static List<Class<? extends Operator>> operators;
+    private static List<Class<? extends Function>> functions;
+    private static List<Class<? extends Constant>> constants;
+
+    public static List<Class<? extends Operator>> getOperators() {
+        if (operators == null)
+            operators = new ArrayList<>();
+        return operators;
+    }
+
+    public static List<Class<? extends Function>> getFunctions() {
+        if (functions == null)
+            functions = new ArrayList<>();
+        return functions;
+    }
+
+    public static List<Class<? extends Constant>> getConstants() {
+        if (constants == null)
+            constants = new ArrayList<>();
+        return constants;
+    }
+
+    public static void registerOperator(Class<? extends Operator> operator) {
+        getOperators().add(operator);
+    }
+
+    public static void registerFunction(Class<? extends Function> function) {
+        getFunctions().add(function);
+    }
+
+    public static void registerConstant(Class<? extends Constant> constant) {
+        getConstants().add(constant);
+    }
+
+    @SuppressWarnings("UnusedReturnValue")
+    public static boolean deregisterOperator(Class<? extends Operator> operator) {
+        return getOperators().remove(operator);
+    }
+
+    @SuppressWarnings("UnusedReturnValue")
+    public static boolean deregisterFunction(Class<? extends Function> function) {
+        return getFunctions().remove(function);
+    }
+
+    @SuppressWarnings("UnusedReturnValue")
+    public static boolean deregisterConstant(Class<? extends Constant> constant) {
+        return getConstants().remove(constant);
+    }
+
+    public abstract String getFormulaRepresentation();
+
+    @Override
     public String toString() {
         return getFormulaRepresentation();
     }
-	
-	public static List<Class<? extends Operator>> getOperators() {
-		if (operators==null)
-			operators = new ArrayList<>();
-		return operators;
-	}
-
-	public static List<Class<? extends Function>> getFunctions() {
-		if (functions == null)
-			functions = new ArrayList<>();
-		return functions;
-	}
-	
-	public static List<Class<? extends Constant>> getConstants() {
-		if (constants == null)
-			constants = new ArrayList<>();
-		return constants;
-	}
-
-	public static void registerOperator(Class<? extends Operator> operator){
-		getOperators().add(operator);
-	}
-
-	public static void registerFunction(Class<? extends Function> function){
-		getFunctions().add(function);
-	}
-
-	public static void registerConstant(Class<? extends Constant> constant){
-		getConstants().add(constant);
-	}
-
-    public static boolean deregisterOperator(Class<? extends Operator> operator){
-		return getOperators().remove(operator);
-	}
-
-    public static boolean deregisterFunction(Class<? extends Function> function){
-		return getFunctions().remove(function);
-	}
-
-    public static boolean deregisterConstant(Class<? extends Constant> constant){
-        return getConstants().remove(constant);
-	}
-
-	private static List<Class<? extends Operator>> operators;
-	private static List<Class<? extends Function>> functions;
-	private static List<Class<? extends Constant>> constants;
 }

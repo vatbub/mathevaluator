@@ -36,6 +36,7 @@ public class Number extends MathLiteral {
         setValue(value);
     }
 
+    @SuppressWarnings("Annotator")
     public static boolean isParsableDouble(String string) {
         final String Digits = "(\\p{Digit}+)";
         final String HexDigits = "(\\p{XDigit}+)";

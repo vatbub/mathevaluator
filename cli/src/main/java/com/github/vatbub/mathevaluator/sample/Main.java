@@ -1,4 +1,4 @@
-package com.github.vatbub;
+package com.github.vatbub.mathevaluator.sample;
 
 /*-
  * #%L
@@ -28,8 +28,9 @@ import com.github.vatbub.mathevaluator.MathExpression;
 
 public class Main {
     public static final String exitInput = "exit";
+
     public static void main(String[] args) throws ParseException {
-        while(true){
+        while (true) {
             Prompt prompt = new Prompt("Please enter your math expression (Hit Ctrl+C or type 'exit' to quit the program)", new ParsableString(exitInput));
             ParsableString input = (ParsableString) prompt.doPrompt();
             if (input.toValue().equals(exitInput))
@@ -38,7 +39,7 @@ public class Main {
             try {
                 MathExpression expression = new MathExpression(input.toValue());
                 System.out.println("The result is " + expression.evaluate().getValue());
-            }catch(Exception e){
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         }

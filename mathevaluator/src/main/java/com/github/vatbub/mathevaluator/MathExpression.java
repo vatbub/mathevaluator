@@ -48,7 +48,7 @@ public class MathExpression extends MathLiteral {
     /**
      * Parses the specified term and returns its object representation
      *
-     * @param expression
+     * @param expression The expression to parse
      */
     public MathExpression(String expression) {
         parse(expression);

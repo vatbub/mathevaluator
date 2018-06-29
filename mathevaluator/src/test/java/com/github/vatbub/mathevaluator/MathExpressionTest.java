@@ -30,7 +30,7 @@ import org.junit.Test;
 public class MathExpressionTest {
 
     @Test
-    public void simpleMultplicationTest() {
+    public void simpleMultiplicationTest() {
         MathExpression expression = new MathExpression("2*10");
         Assert.assertEquals(20, expression.evaluate().getValue(), 0);
     }
@@ -223,22 +223,19 @@ public class MathExpressionTest {
     }
 
     public static class ConstantWithNonDefaultConstructor extends Constant {
-        private Number value;
-
         /**
          * The only purpose of this constructor is to hide the default constructor -->
          * Destroys the reflection mechanism used to instantiate constants
          *
-         * @param value
+         * @param value dummy argument
          */
         @SuppressWarnings("unused")
         public ConstantWithNonDefaultConstructor(Number value) {
-            this.value = value;
         }
 
         @Override
         public Number getValue() {
-            return value;
+            return null;
         }
 
         @Override
@@ -253,7 +250,7 @@ public class MathExpressionTest {
          * The only purpose of this constructor is to hide the default constructor -->
          * Destroys the reflection mechanism used to instantiate operators
          *
-         * @param value
+         * @param value dummy argument
          */
         @SuppressWarnings("unused")
         public OperatorWithNonDefaultConstructor(Number value) {
@@ -275,13 +272,13 @@ public class MathExpressionTest {
         }
     }
 
-    public static class FunctionWithNonDefaultConstructor extends Function{
+    public static class FunctionWithNonDefaultConstructor extends Function {
 
         /**
          * The only purpose of this constructor is to hide the default constructor -->
          * Destroys the reflection mechanism used to instantiate operators
          *
-         * @param value
+         * @param value dummy argument
          */
         @SuppressWarnings("unused")
         public FunctionWithNonDefaultConstructor(Number value) {

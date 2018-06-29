@@ -30,14 +30,15 @@ public abstract class Operator extends MathLiteral {
      * Specifies the order in which operators are evaluated. Operators with a higher integer value will be evaluated first.
      * The priorities of the built-in operators are:
      * <ul>
-     *     <li>+: 0</li>
-     *     <li>-: 100</li>
-     *     <li>*: 200</li>
-     *     <li>/: 300</li>
-     *     <li>^: 400</li>
+     * <li>+: 0</li>
+     * <li>-: 100</li>
+     * <li>*: 200</li>
+     * <li>/: 300</li>
+     * <li>^: 400</li>
      * </ul>
      * Please avoid operators with colliding priorities as the behaviour is undefined for that case.
+     *
      * @return The priority of the operator.
      */
-    public abstract int getPriority();    
+    public abstract int getPriority();
 }

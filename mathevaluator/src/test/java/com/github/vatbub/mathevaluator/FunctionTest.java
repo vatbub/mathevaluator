@@ -21,9 +21,6 @@ package com.github.vatbub.mathevaluator;
  */
 
 
-import com.github.vatbub.mathevaluator.Function;
-import com.github.vatbub.mathevaluator.MathExpression;
-import com.github.vatbub.mathevaluator.Number;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -67,7 +64,7 @@ public class FunctionTest {
         };
     }
 
-    private void assertIllegalArgumentException(Function function){
+    private void assertIllegalArgumentException(Function function) {
         try {
             function.evaluate();
             Assert.fail("IllegalArgumentException expected");
@@ -90,7 +87,7 @@ public class FunctionTest {
     }
 
     @Test
-    public void successfulEValuateCallTest(){
+    public void successfulEValuateCallTest() {
         final boolean[] called = {false};
         Function function = new Function() {
             @Override
