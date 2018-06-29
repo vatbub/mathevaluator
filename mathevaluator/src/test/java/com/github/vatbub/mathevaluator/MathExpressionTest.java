@@ -132,6 +132,12 @@ public class MathExpressionTest {
     }
 
     @Test
+    public void multiplyNegatedConstantTest() {
+        MathExpression expression = new MathExpression("2*-pi");
+        Assert.assertEquals(2 * -Math.PI, expression.evaluate().getValue(), 0);
+    }
+
+    @Test
     public void implicitMultiplicationDetectionTest1() {
         assertThrowable(() -> new MathExpression("(2^2)(3*5)"), new UnsupportedOperationException("Implicit multiplication is not yet supported"));
     }

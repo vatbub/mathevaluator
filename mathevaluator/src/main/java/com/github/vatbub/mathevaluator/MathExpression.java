@@ -181,8 +181,14 @@ public class MathExpression extends MathLiteral {
     private boolean isLastElementANumberOrExpression(@NotNull List<MathLiteral> expression) {
         if (expression.size() == 0)
             return false;
-        MathLiteral lastElement = expression.get(expression.size() - 1);
-        return lastElement instanceof Number || lastElement instanceof MathExpression || lastElement instanceof Constant;
+        return isElementANumberOrExpression(expression, expression.size() - 1);
+    }
+
+    private boolean isElementANumberOrExpression(@NotNull List<MathLiteral> expression, int index) {
+        if (expression.size() == 0)
+            return false;
+        MathLiteral element = expression.get(index);
+        return element instanceof Number || element instanceof MathExpression || element instanceof Constant;
     }
 
     private void parseNumber(String number,
@@ -256,9 +262,8 @@ public class MathExpression extends MathLiteral {
                     indexOfOperatorWithHighestPriority = i;
                 else {
                     Operator operator = (Operator) literal;
-                    if (operator.getPriority() > ((Operator) simplifiedExpression
-                            .get(indexOfOperatorWithHighestPriority))
-                            .getPriority())
+                    if (operator.getPriority() > ((Operator) simplifiedExpression.get(indexOfOperatorWithHighestPriority)).getPriority()
+                            || (getOperatorSuperclassPriority(operator) > getOperatorSuperclassPriority((Operator) simplifiedExpression.get(indexOfOperatorWithHighestPriority)) && !isElementANumberOrExpression(simplifiedExpression, i - 1)))
                         indexOfOperatorWithHighestPriority = i;
                 }
             }
@@ -296,6 +301,10 @@ public class MathExpression extends MathLiteral {
         }
 
         return (Number) simplifiedExpression.get(0);
+    }
+
+    private int getOperatorSuperclassPriority(Operator operator) {
+        return operator instanceof SingleArgumentOperator ? 1 : 0;
     }
 
     @Override
