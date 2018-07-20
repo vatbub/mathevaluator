@@ -42,6 +42,12 @@ public class MathExpressionTest {
     }
 
     @Test
+    public void negativeNumberAtTheEndWithoutParenthesisTest() {
+        MathExpression expression = new MathExpression("1+-2");
+        Assert.assertEquals(-1, expression.evaluate().getValue(), 0);
+    }
+
+    @Test
     public void simpleSubtractionTest() {
         MathExpression expression = new MathExpression("10-2");
         Assert.assertEquals(8, expression.evaluate().getValue(), 0);
