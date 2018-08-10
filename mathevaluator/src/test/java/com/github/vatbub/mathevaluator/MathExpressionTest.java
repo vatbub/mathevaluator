@@ -150,13 +150,15 @@ public class MathExpressionTest {
     }
 
     @Test
-    public void implicitMultiplicationDetectionTest1() {
-        assertThrowable(() -> new MathExpression("(2^2)(3*5)"), new UnsupportedOperationException("Implicit multiplication is not yet supported"));
+    public void implicitMultiplicationTest1() {
+        MathExpression expression = new MathExpression("(2^2)(3*5)");
+        Assert.assertEquals(60, expression.evaluate().getValue(), 0);
     }
 
     @Test
-    public void implicitMultiplicationDetectionTest2() {
-        assertThrowable(() -> new MathExpression("2(3*5)"), new UnsupportedOperationException("Implicit multiplication is not yet supported"));
+    public void implicitMultiplicationTest2() {
+        MathExpression expression = new MathExpression("2(3*5)");
+        Assert.assertEquals(30, expression.evaluate().getValue(), 0);
     }
 
     @Test

@@ -9,9 +9,9 @@ package com.github.vatbub.mathevaluator;
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -68,9 +68,12 @@ public class MathExpression extends MathLiteral {
                 if (openBrackets > 0) // we already have open brackets, add this
                     // one to the parse buffer
                     parseBuffer.append(character);
-                else if (parseBuffer.length() > 0 || isLastElementANumberOrExpressionOrFunction(res))
+                else if (parseBuffer.length() > 0 || isLastElementANumberOrExpressionOrFunction(res)) {
                     // there was something in the parse buffer --> implicit multiplication
-                    throw new UnsupportedOperationException("Implicit multiplication is not yet supported");
+                    Function f = parseCurrentBuffer(parseBuffer, res, new OperatorImplementations.MultiplyOperator().getFormulaRepresentation());
+                    if (f != null)
+                        pendingFunction = f;
+                }
                 openBrackets++;
             } else if (character.equals(")")) {
                 if (openBrackets > 1)
@@ -102,69 +105,9 @@ public class MathExpression extends MathLiteral {
                 throw new IllegalArgumentException(
                         "Function names must be followed by parenthesis to declare the function parameters");
             } else {
-                if (Number.isParsableDouble(parseBuffer.toString())
-                        && !Number.isParsableDouble(parseBuffer.toString()
-                        + character)) {
-                    // parseBuffer was previously parsable as a double but when
-                    // adding the current char, it becomes unparsable --> we
-                    // need to parse the number now
-                    parseNumber(parseBuffer.toString(), res);
-                    parseBuffer = new StringBuffer();
-                }
-
-                parseBuffer.append(character);
-
-                // parse constants
-                for (Class<? extends Constant> constantClass : MathLiteral
-                        .getConstants()) {
-                    Constant constant;
-                    try {
-                        constant = constantClass.newInstance();
-                    } catch (InstantiationException | IllegalAccessException e) {
-                        throw new RuntimeException(e);
-                    }
-                    if (parseBuffer.toString().equals(
-                            constant.getFormulaRepresentation())) {
-                        res.add(constant);
-                        parseBuffer = new StringBuffer();
-                        break;
-                    }
-                }
-
-                // parse operators
-                for (Class<? extends Operator> operatorClass : MathLiteral
-                        .getOperators()) {
-                    Operator operator;
-                    try {
-                        operator = operatorClass.newInstance();
-                    } catch (InstantiationException | IllegalAccessException e) {
-                        throw new RuntimeException(e);
-                    }
-                    if (parseBuffer.toString().equals(
-                            operator.getFormulaRepresentation())
-                            && (operator instanceof SingleArgumentOperator || isLastElementANumberOrExpressionOrFunction(res))) {
-                        res.add(operator);
-                        parseBuffer = new StringBuffer();
-                        break;
-                    }
-                }
-
-                // parse functions
-                for (Class<? extends Function> functionClass : MathLiteral
-                        .getFunctions()) {
-                    Function function;
-                    try {
-                        function = functionClass.newInstance();
-                    } catch (InstantiationException | IllegalAccessException e) {
-                        throw new RuntimeException(e);
-                    }
-                    if (parseBuffer.toString().equals(
-                            function.getFormulaRepresentation())) {
-                        pendingFunction = function;
-                        parseBuffer = new StringBuffer();
-                        break;
-                    }
-                }
+                Function f = parseCurrentBuffer(parseBuffer, res, character);
+                if (f != null)
+                    pendingFunction = f;
             }
         }
 
@@ -176,6 +119,73 @@ public class MathExpression extends MathLiteral {
             parseNumber(parseBuffer.toString(), res);
 
         setExpression(res);
+    }
+
+    private Function parseCurrentBuffer(StringBuffer parseBuffer, List<MathLiteral> res, String character) {
+        if (Number.isParsableDouble(parseBuffer.toString())
+                && !Number.isParsableDouble(parseBuffer.toString()
+                + character)) {
+            // parseBuffer was previously parsable as a double but when
+            // adding the current char, it becomes unparsable --> we
+            // need to parse the number now
+            parseNumber(parseBuffer.toString(), res);
+            parseBuffer.setLength(0);
+        }
+
+        parseBuffer.append(character);
+
+        // parse constants
+        for (Class<? extends Constant> constantClass : MathLiteral
+                .getConstants()) {
+            Constant constant;
+            try {
+                constant = constantClass.newInstance();
+            } catch (InstantiationException | IllegalAccessException e) {
+                throw new RuntimeException(e);
+            }
+            if (parseBuffer.toString().equals(
+                    constant.getFormulaRepresentation())) {
+                res.add(constant);
+                parseBuffer.setLength(0);
+                break;
+            }
+        }
+
+        // parse operators
+        for (Class<? extends Operator> operatorClass : MathLiteral
+                .getOperators()) {
+            Operator operator;
+            try {
+                operator = operatorClass.newInstance();
+            } catch (InstantiationException | IllegalAccessException e) {
+                throw new RuntimeException(e);
+            }
+            if (parseBuffer.toString().equals(
+                    operator.getFormulaRepresentation())
+                    && (operator instanceof SingleArgumentOperator || isLastElementANumberOrExpressionOrFunction(res))) {
+                res.add(operator);
+                parseBuffer.setLength(0);
+                break;
+            }
+        }
+
+        // parse functions
+        for (Class<? extends Function> functionClass : MathLiteral
+                .getFunctions()) {
+            Function function;
+            try {
+                function = functionClass.newInstance();
+            } catch (InstantiationException | IllegalAccessException e) {
+                throw new RuntimeException(e);
+            }
+            if (parseBuffer.toString().equals(
+                    function.getFormulaRepresentation())) {
+                parseBuffer.setLength(0);
+                return function;
+            }
+        }
+
+        return null;
     }
 
     private boolean isLastElementANumberOrExpressionOrFunction(@NotNull List<MathLiteral> expression) {
