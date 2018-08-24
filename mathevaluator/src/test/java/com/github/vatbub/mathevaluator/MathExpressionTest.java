@@ -9,9 +9,9 @@ package com.github.vatbub.mathevaluator;
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -150,15 +150,63 @@ public class MathExpressionTest {
     }
 
     @Test
-    public void implicitMultiplicationTest1() {
+    public void implicitMultiplicationOfMathExpressionWithMathExpressionTest() {
         MathExpression expression = new MathExpression("(2^2)(3*5)");
         Assert.assertEquals(60, expression.evaluate().getValue(), 0);
     }
 
     @Test
-    public void implicitMultiplicationTest2() {
+    public void implicitMultiplicationOfNumberWithMathExpressionTest() {
         MathExpression expression = new MathExpression("2(3*5)");
         Assert.assertEquals(30, expression.evaluate().getValue(), 0);
+    }
+
+    @Test
+    public void implicitMultiplicationOfConstantWithMathExpressionTest() {
+        MathExpression expression = new MathExpression("pi(3*5)");
+        Assert.assertEquals(Math.PI * 15, expression.evaluate().getValue(), 0);
+    }
+
+    @Test
+    public void implicitMultiplicationOfFunctionWithMathExpressionTest() {
+        MathExpression expression = new MathExpression("sin(2)(3*5)");
+        Assert.assertEquals(Math.sin(2) * 15, expression.evaluate().getValue(), 0);
+    }
+
+    @Test
+    public void implicitMultiplicationOfMathExpressionWithConstantTest() {
+        MathExpression expression = new MathExpression("(3*5)pi");
+        Assert.assertEquals(Math.PI * 15, expression.evaluate().getValue(), 0);
+    }
+
+    @Test
+    public void implicitMultiplicationOfMathExpressionWithFunctionTest() {
+        MathExpression expression = new MathExpression("(3*5)sin(2)");
+        Assert.assertEquals(15 * Math.sin(2), expression.evaluate().getValue(), 0);
+    }
+
+    @Test
+    public void implicitMultiplicationOfNumberWithConstantTest() {
+        MathExpression expression = new MathExpression("2pi");
+        Assert.assertEquals(2 * Math.PI, expression.evaluate().getValue(), 0);
+    }
+
+    @Test
+    public void implicitMultiplicationOfNumberWithFunctionTest() {
+        MathExpression expression = new MathExpression("2sin(2)");
+        Assert.assertEquals(2 * Math.sin(2), expression.evaluate().getValue(), 0);
+    }
+
+    @Test
+    public void implicitMultiplicationOfConstantWithConstantTest() {
+        MathExpression expression = new MathExpression("pipi");
+        Assert.assertEquals(Math.PI * Math.PI, expression.evaluate().getValue(), 0);
+    }
+
+    @Test
+    public void implicitMultiplicationOfConstantWithFunctionTest() {
+        MathExpression expression = new MathExpression("pisin(2)");
+        Assert.assertEquals(Math.PI * Math.sin(2), expression.evaluate().getValue(), 0);
     }
 
     @Test

@@ -35,6 +35,22 @@ MathExpression expression = new MathExpression("(5+10)*4/5*(2+2)");
 double result =  expression.evaluate().getValue();
 ```
 
+## Implicit multiplication
+Yes, the parser understands implicit multiplication! It does so when one of the following conditions is met:
+
+| Previous literal \ current literal | Number | Operator | SingleArgumentOperator | Constant | Function | MathExpression |
+|------------------------------------|--------|----------|------------------------|----------|----------|----------------|
+| Number                             | No     | No       | No                     | Yes      | Yes      | Yes            |
+| Operator                           | No     | No       | No                     | No       | No       | No             |
+| SingleArgumentOperator             | No     | No       | No                     | No       | No       | No             |
+| Constant                           | No     | No       | No                     | Yes      | Yes      | Yes            |
+| Function                           | No     | No       | No                     | Yes      | Yes      | Yes            |
+| MathExpression                     | No     | No       | No                     | Yes      | Yes      | Yes            |
+
+If a literal of the type specified in the first column is followed by the type specified in the first row and the corresponding cell in the above table indicates 'Yes', implicit multiplication is assumed.
+
+When extending the parser (see below), you may override `supportsImplicitMultiplication(MathLiteral previousLiteral)` to tell the parser when your literal supports implicit multiplication and when not.
+
 ## Extending the parser
 The parser is built in a modular way which allows it to be extended. If you wish to implement your own operators, constants or functions, just do the following:
 

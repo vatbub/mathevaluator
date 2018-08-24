@@ -99,4 +99,9 @@ public class Number extends MathLiteral {
     public String getFormulaRepresentation() {
         return getValue().toString();
     }
+
+    @Override
+    public boolean supportsImplicitMultiplication(MathLiteral previousLiteral) {
+        return false;
+    }
 }

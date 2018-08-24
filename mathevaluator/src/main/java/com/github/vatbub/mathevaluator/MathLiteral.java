@@ -81,6 +81,14 @@ public abstract class MathLiteral {
 
     public abstract String getFormulaRepresentation();
 
+    /**
+     * Tells the parser whether this literal supports implicit multiplication when preceded by the supplied math literal
+     *
+     * @param previousLiteral The {@link MathLiteral} that precedes this math literal.
+     * @return {@code true} if this math literal supports implicit multiplication, {@code false} otherwise
+     */
+    public abstract boolean supportsImplicitMultiplication(MathLiteral previousLiteral);
+
     @Override
     public String toString() {
         return getFormulaRepresentation();

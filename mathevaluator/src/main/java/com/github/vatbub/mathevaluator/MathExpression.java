@@ -68,7 +68,7 @@ public class MathExpression extends MathLiteral {
                 if (openBrackets > 0) // we already have open brackets, add this
                     // one to the parse buffer
                     parseBuffer.append(character);
-                else if (parseBuffer.length() > 0 || isLastElementANumberOrExpressionOrFunction(res)) {
+                else if (parseBuffer.length() > 0) {
                     // there was something in the parse buffer --> implicit multiplication
                     Function f = parseCurrentBuffer(parseBuffer, res, new OperatorImplementations.MultiplyOperator().getFormulaRepresentation());
                     if (f != null)
@@ -90,10 +90,11 @@ public class MathExpression extends MathLiteral {
                             parsedParams.add(new MathExpression(param));
 
                         pendingFunction.setParams(parsedParams);
-                        res.add(pendingFunction);
+                        addItemToListOfMathLiterals(res, pendingFunction);
                         pendingFunction = null;
                     } else {
-                        res.add(new MathExpression(parseBuffer.toString()));
+                        MathExpression mathExpression = new MathExpression(parseBuffer.toString());
+                        addItemToListOfMathLiterals(res, mathExpression);
                     }
                     parseBuffer = new StringBuffer();
                 }
@@ -145,7 +146,7 @@ public class MathExpression extends MathLiteral {
             }
             if (parseBuffer.toString().equals(
                     constant.getFormulaRepresentation())) {
-                res.add(constant);
+                addItemToListOfMathLiterals(res, constant);
                 parseBuffer.setLength(0);
                 break;
             }
@@ -163,7 +164,7 @@ public class MathExpression extends MathLiteral {
             if (parseBuffer.toString().equals(
                     operator.getFormulaRepresentation())
                     && (operator instanceof SingleArgumentOperator || isLastElementANumberOrExpressionOrFunction(res))) {
-                res.add(operator);
+                addItemToListOfMathLiterals(res, operator);
                 parseBuffer.setLength(0);
                 break;
             }
@@ -186,6 +187,14 @@ public class MathExpression extends MathLiteral {
         }
 
         return null;
+    }
+
+    private void addItemToListOfMathLiterals(List<MathLiteral> res, MathLiteral itemToAdd) {
+        if (res.size() > 0 && itemToAdd.supportsImplicitMultiplication(res.get(res.size() - 1)))
+            // implicit multiplication
+            res.add(new OperatorImplementations.MultiplyOperator());
+
+        res.add(itemToAdd);
     }
 
     private boolean isLastElementANumberOrExpressionOrFunction(@NotNull List<MathLiteral> expression) {
@@ -336,5 +345,10 @@ public class MathExpression extends MathLiteral {
         }
 
         return builder.toString();
+    }
+
+    @Override
+    public boolean supportsImplicitMultiplication(MathLiteral previousLiteral) {
+        return previousLiteral instanceof Number || previousLiteral instanceof Constant || previousLiteral instanceof Function || previousLiteral instanceof MathExpression;
     }
 }

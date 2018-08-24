@@ -41,4 +41,9 @@ public abstract class Operator extends MathLiteral {
      * @return The priority of the operator.
      */
     public abstract int getPriority();
+
+    @Override
+    public boolean supportsImplicitMultiplication(MathLiteral previousLiteral) {
+        return false;
+    }
 }
