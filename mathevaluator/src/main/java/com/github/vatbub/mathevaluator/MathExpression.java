@@ -24,6 +24,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Represents a mathematical term.
@@ -56,6 +57,17 @@ public class MathExpression extends MathLiteral {
 
     private void parse(String expression) {
         expression = expression.replaceAll(" ", "");
+        RuntimeConstant runtimeConstant = null;
+
+        // check for runtime constant definitions
+        String[] splitAtEqualSign = expression.split("=");
+        if (splitAtEqualSign.length > 2)
+            throw new IllegalArgumentException("Runtime constant declarations must not contain more than one equal sign");
+        if (splitAtEqualSign.length == 2) {
+            runtimeConstant = new RuntimeConstant(splitAtEqualSign[0], this);
+            expression = splitAtEqualSign[1];
+        }
+
         StringBuffer parseBuffer = new StringBuffer();
         List<MathLiteral> res = new ArrayList<>(expression.length());
         int openBrackets = 0;
@@ -120,6 +132,8 @@ public class MathExpression extends MathLiteral {
             parseNumber(parseBuffer.toString(), res);
 
         setExpression(res);
+        if (runtimeConstant != null)
+            registerRuntimeConstant(runtimeConstant);
     }
 
     private Function parseCurrentBuffer(StringBuffer parseBuffer, List<MathLiteral> res, String character) {
@@ -147,6 +161,15 @@ public class MathExpression extends MathLiteral {
             if (parseBuffer.toString().equals(
                     constant.getFormulaRepresentation())) {
                 addItemToListOfMathLiterals(res, constant);
+                parseBuffer.setLength(0);
+                break;
+            }
+        }
+
+        // parse runtime constants
+        for (Map.Entry<String, RuntimeConstant> runtimeConstant : MathLiteral.getRuntimeConstants().entrySet()) {
+            if (parseBuffer.toString().equals(runtimeConstant.getKey())) {
+                addItemToListOfMathLiterals(res, runtimeConstant.getValue());
                 parseBuffer.setLength(0);
                 break;
             }

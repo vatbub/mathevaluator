@@ -1,7 +1,9 @@
 package com.github.vatbub.mathevaluator;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /*-
  * #%L
@@ -12,9 +14,9 @@ import java.util.List;
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -33,6 +35,7 @@ public abstract class MathLiteral {
     private static List<Class<? extends Operator>> operators;
     private static List<Class<? extends Function>> functions;
     private static List<Class<? extends Constant>> constants;
+    private static Map<String, RuntimeConstant> runtimeConstants;
 
     public static List<Class<? extends Operator>> getOperators() {
         if (operators == null)
@@ -52,6 +55,12 @@ public abstract class MathLiteral {
         return constants;
     }
 
+    public static Map<String, RuntimeConstant> getRuntimeConstants() {
+        if (runtimeConstants == null)
+            runtimeConstants = new HashMap<>();
+        return runtimeConstants;
+    }
+
     public static void registerOperator(Class<? extends Operator> operator) {
         getOperators().add(operator);
     }
@@ -62,6 +71,18 @@ public abstract class MathLiteral {
 
     public static void registerConstant(Class<? extends Constant> constant) {
         getConstants().add(constant);
+    }
+
+    public static void registerRuntimeConstant(RuntimeConstant runtimeConstant) {
+        deregisterRuntimeConstant(runtimeConstant);
+        getRuntimeConstants().put(runtimeConstant.getName(), runtimeConstant);
+        updateValuesOfRuntimeConstants();
+    }
+
+    private static void updateValuesOfRuntimeConstants() {
+        for (Map.Entry<String, RuntimeConstant> runtimeConstantEntry : getRuntimeConstants().entrySet()) {
+            runtimeConstantEntry.getValue().updateValue();
+        }
     }
 
     @SuppressWarnings("UnusedReturnValue")
@@ -77,6 +98,14 @@ public abstract class MathLiteral {
     @SuppressWarnings("UnusedReturnValue")
     public static boolean deregisterConstant(Class<? extends Constant> constant) {
         return getConstants().remove(constant);
+    }
+
+    public static boolean deregisterRuntimeConstant(RuntimeConstant runtimeConstant) {
+        return deregisterRuntimeConstant(runtimeConstant.getName());
+    }
+
+    public static boolean deregisterRuntimeConstant(String constantName) {
+        return getRuntimeConstants().remove(constantName) != null;
     }
 
     public abstract String getFormulaRepresentation();

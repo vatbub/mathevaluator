@@ -242,6 +242,34 @@ public class MathExpressionTest {
     }
 
     @Test
+    public void runtimeConstantTest() {
+        MathExpression expression1 = new MathExpression("something = 2*5");
+        Assert.assertEquals(10, expression1.evaluate().getValue(), 0);
+        MathExpression expression2 = new MathExpression("2*something");
+        Assert.assertEquals(20, expression2.evaluate().getValue(), 0);
+    }
+
+    @Test
+    public void multipleEqualSignsTest() {
+        assertThrowable(() -> new MathExpression("something = 2*5 = 3"), new IllegalArgumentException("Runtime constant declarations must not contain more than one equal sign"));
+    }
+
+    @Test
+    public void runtimeConstantUpdateTest() {
+        new MathExpression("x = 10");
+        MathExpression expression2 = new MathExpression("y = 2*x");
+        Assert.assertEquals(20, expression2.evaluate().getValue(), 0);
+
+        new MathExpression("x = 5");
+        Assert.assertEquals(10, expression2.evaluate().getValue(), 0);
+    }
+
+    @Test
+    public void circularRuntimeConstantDefinitionTest() {
+        assertThrowable(() -> new MathExpression("something = 2*something"), new NumberFormatException("For input string: \"something\""));
+    }
+
+    @Test
     public void notInstantiableConstantTest() {
         MathLiteral.registerConstant(ConstantWithNonDefaultConstructor.class);
         try {
