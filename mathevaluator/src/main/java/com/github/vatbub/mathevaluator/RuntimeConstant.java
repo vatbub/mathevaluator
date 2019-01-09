@@ -24,7 +24,7 @@ package com.github.vatbub.mathevaluator;
 import java.util.Objects;
 
 public class RuntimeConstant extends Constant {
-    private String name;
+    private final String name;
     private MathExpression expression;
 
     public RuntimeConstant(String name, MathExpression expression) {

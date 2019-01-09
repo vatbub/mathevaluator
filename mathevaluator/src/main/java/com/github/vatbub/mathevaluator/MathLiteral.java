@@ -100,6 +100,7 @@ public abstract class MathLiteral {
         return getConstants().remove(constant);
     }
 
+    @SuppressWarnings("UnusedReturnValue")
     public static boolean deregisterRuntimeConstant(RuntimeConstant runtimeConstant) {
         return deregisterRuntimeConstant(runtimeConstant.getName());
     }
