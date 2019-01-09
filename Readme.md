@@ -1,5 +1,5 @@
 # Math evaluator
-This is just a small side project of mine which intends to parse math expressions and calculate the result.
+This is just a small side project of mine which intends to parse math expressions (saved as a `String`)and calculate the result.
 
 ## What it does
 The lib can parse expressions which contain
@@ -7,9 +7,9 @@ The lib can parse expressions which contain
 - Subtractions
 - Multiplications
 - Divisions
-- Parenthesis
+- Parenthesis (even nested parenthesis)
 - Powers
-- Functions (`sin`, `cos`, `tan`, `cot` and `sqrt`)
+- Functions (`sin`, `cos`, `tan`, `cot`, `sqrt` and `factorial`)
 
 The lib takes string which follows the above rules, parses it and computes the result.
 

@@ -9,9 +9,9 @@ package com.github.vatbub.mathevaluator;
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -28,6 +28,7 @@ public abstract class FunctionImplementations {
         MathLiteral.registerFunction(SquareRootFunction.class);
         MathLiteral.registerFunction(SineFunction.class);
         MathLiteral.registerFunction(CosineFunction.class);
+        MathLiteral.registerFunction(FactorialFunction.class);
     }
 
     /**
@@ -107,6 +108,32 @@ public abstract class FunctionImplementations {
         @Override
         public String getFormulaRepresentation() {
             return "cot";
+        }
+    }
+
+    public static class FactorialFunction extends OneArgumentFunction {
+
+        @Override
+        public Number evaluateImpl() {
+            return new Number(calculateFactorial(getParams().get(0).evaluate().getValue()));
+        }
+
+        private double calculateFactorial(double input) {
+            if (input < 0)
+                throw new IllegalArgumentException("Factorial is not defined for negative inputs");
+
+            if (input != Math.floor(input))
+                throw new IllegalArgumentException("Factorial can only be calculated for integer inputs");
+
+            if (input == 0)
+                return 1;
+
+            return input * calculateFactorial(input - 1);
+        }
+
+        @Override
+        public String getFormulaRepresentation() {
+            return "factorial";
         }
     }
 }
