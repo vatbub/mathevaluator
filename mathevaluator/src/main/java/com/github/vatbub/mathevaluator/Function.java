@@ -26,7 +26,7 @@ import java.util.List;
 /**
  * Represents a function (like sine, cosine or sqrt).
  * A function may take no, one or more inputs and computes an output from it.
- * If teh function does not take any input, consider extending {@link Constant} instead.
+ * If the function does not take any input, consider extending {@link Constant} instead.
  */
 public abstract class Function extends MathLiteral {
     private List<MathExpression> params;
