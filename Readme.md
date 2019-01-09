@@ -16,7 +16,8 @@ The lib takes string which follows the above rules, parses it and computes the r
  ## How to use it
  Since I programmed the engine during one evening in front of the TV, I figured that it wouldn't be worth the time to upload the lib to maven central. 
  Hence, you need to clone the repo and run `mvn install` to get it working.
- Then, add the following dependency:
+ Then, you can either use the cli by running `java -jar cli/target/math-evaluator.cli-1.0-SNAPSHOT-jar-with-dependencies.jar` 
+ or use the engine in your own project:
  
  ```xml
 <dependencies>
@@ -34,6 +35,26 @@ After compiling, you can use the lib like so:
 MathExpression expression = new MathExpression("(5+10)*4/5*(2+2)");
 double result =  expression.evaluate().getValue();
 ```
+
+## Constants
+### Built-in constants
+- [Pi](https://en.wikipedia.org/wiki/Pi)
+- [e](https://en.wikipedia.org/wiki/E_%28mathematical_constant%29)
+
+You may add your own constants by extending the parser (see below)
+
+### Runtime constants
+You may define constants at runtime by inputting the following into the parser:
+
+```
+y=2*5 // evaluates to 10
+x=2*y // evaluates to 20
+y=50  // redefines the value of y, x will change accordingly
+x     // evaluates to 100 
+```
+
+As shown above, the constants store their relations to each other. Therefore, if `x` depends on `y` 
+as in the example above and the value of `y` is changed, `x` updates accordingly.
 
 ## Implicit multiplication
 Yes, the parser understands implicit multiplication! It does so when one of the following conditions is met:
