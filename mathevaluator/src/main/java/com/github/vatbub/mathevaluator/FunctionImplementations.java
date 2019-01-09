@@ -28,6 +28,8 @@ public abstract class FunctionImplementations {
         MathLiteral.registerFunction(SquareRootFunction.class);
         MathLiteral.registerFunction(SineFunction.class);
         MathLiteral.registerFunction(CosineFunction.class);
+        MathLiteral.registerFunction(TangentFunction.class);
+        MathLiteral.registerFunction(CotangentFunction.class);
         MathLiteral.registerFunction(FactorialFunction.class);
     }
 
