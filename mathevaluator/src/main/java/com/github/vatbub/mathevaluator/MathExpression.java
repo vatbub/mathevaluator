@@ -141,7 +141,7 @@ public class MathExpression extends MathLiteral {
             checkForCircularReferences(constant.getExpression(), currentRuntimeConstant);
         } else if (literal instanceof MathExpression) {
             MathExpression expression = (MathExpression) literal;
-            for (MathLiteral item : expression.expression) {
+            for (MathLiteral item : expression.getExpression()) {
                 checkForCircularReferences(item, currentRuntimeConstant);
             }
         }
