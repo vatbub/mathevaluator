@@ -31,12 +31,6 @@ import java.util.Map;
  * Use {@link #MathExpression(String)} to parse a string and {@link #evaluate()} to evaluate the expression.
  */
 public class MathExpression extends MathLiteral {
-    static {
-        OperatorImplementations.registerBuiltInOperators();
-        FunctionImplementations.registerBuiltInFunctions();
-        ConstantImplementations.registerBuiltInConstants();
-    }
-
     private List<MathLiteral> expression;
 
     /**

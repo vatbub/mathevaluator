@@ -21,6 +21,7 @@ package com.github.vatbub.mathevaluator;
  */
 
 
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -28,6 +29,11 @@ import org.junit.Test;
  * Created by Kammel on 15.06.2018.
  */
 public class MathExpressionTest {
+
+    @After
+    public void cleanUp(){
+        MathLiteral.reset();
+    }
 
     @Test
     public void simpleMultiplicationTest() {

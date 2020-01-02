@@ -14,9 +14,9 @@ import java.util.Map;
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -32,6 +32,10 @@ import java.util.Map;
  * (which allows {@link MathExpression}s to be nested e. g. using parenthesis)
  */
 public abstract class MathLiteral {
+    static {
+        reset();
+    }
+
     private static List<Class<? extends Operator>> operators;
     private static List<Class<? extends Function>> functions;
     private static List<Class<? extends Constant>> constants;
@@ -122,5 +126,30 @@ public abstract class MathLiteral {
     @Override
     public String toString() {
         return getFormulaRepresentation();
+    }
+
+    /**
+     * De-registers all {@link Operator}s, {@link Function}s, {@link Constant}s and {@link RuntimeConstant}s
+     * and then re-registers all built-in {@link Operator}s, {@link Function}s and {@link Constant}s.
+     * <p>
+     * This effectively means that the parser is reset to the initial state prior to any calls to any of the {@code register} methods.
+     */
+    public static void reset() {
+        if (operators != null)
+            operators.clear();
+        if (functions != null)
+            functions.clear();
+        if (constants != null)
+            constants.clear();
+        if (runtimeConstants != null)
+            runtimeConstants.clear();
+
+        registerBuiltIns();
+    }
+
+    private static void registerBuiltIns() {
+        OperatorImplementations.registerBuiltInOperators();
+        FunctionImplementations.registerBuiltInFunctions();
+        ConstantImplementations.registerBuiltInConstants();
     }
 }
