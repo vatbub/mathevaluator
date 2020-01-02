@@ -316,7 +316,7 @@ public class MathExpression extends MathLiteral {
                     indexOfOperatorWithHighestPriority = i;
                 else {
                     Operator operator = (Operator) literal;
-                    if (operator.getPriority() > ((Operator) simplifiedExpression.get(indexOfOperatorWithHighestPriority)).getPriority()
+                    if (operator.getPriority() >= ((Operator) simplifiedExpression.get(indexOfOperatorWithHighestPriority)).getPriority()
                             || (getOperatorSuperclassPriority(operator) > getOperatorSuperclassPriority((Operator) simplifiedExpression.get(indexOfOperatorWithHighestPriority)) && !isElementANumberOrExpressionOrFunction(simplifiedExpression, i - 1)))
                         indexOfOperatorWithHighestPriority = i;
                 }

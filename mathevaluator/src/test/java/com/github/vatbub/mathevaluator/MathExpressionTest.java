@@ -335,6 +335,24 @@ public class MathExpressionTest {
         assertThrowable(() -> new MathExpression("r = c + 1"), new IllegalArgumentException("Circular reference detected"));
     }
 
+    @Test
+    public void doubleUnaryOperatorTest1() {
+        MathExpression expression = new MathExpression("7--3");
+        Assert.assertEquals(10, expression.evaluate().getValue(), 0);
+    }
+
+    @Test
+    public void doubleUnaryOperatorTest2() {
+        MathExpression expression = new MathExpression("7++3");
+        Assert.assertEquals(10, expression.evaluate().getValue(), 0);
+    }
+
+    @Test
+    public void doubleUnaryOperatorTest3() {
+        MathExpression expression = new MathExpression("7---3");
+        Assert.assertEquals(4, expression.evaluate().getValue(), 0);
+    }
+
     private void assertFaultyExpression(String expression, String expectedMessage) {
         assertThrowable(() -> {
             MathExpression mathExpression = new MathExpression(expression);
