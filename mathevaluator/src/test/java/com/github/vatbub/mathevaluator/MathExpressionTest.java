@@ -317,6 +317,24 @@ public class MathExpressionTest {
         }
     }
 
+    @Test
+    public void circularReferenceTest1() {
+        MathExpression expression = new MathExpression("r = 5");
+        Assert.assertEquals(5, expression.evaluate().getValue(), 0);
+
+        assertThrowable(() -> new MathExpression("r = r + 1"), new IllegalArgumentException("Circular reference detected"));
+    }
+
+    @Test
+    public void circularReferenceTest2() {
+        MathExpression expression1 = new MathExpression("r = 5");
+        Assert.assertEquals(5, expression1.evaluate().getValue(), 0);
+        MathExpression expression2 = new MathExpression("c = r + 1");
+        Assert.assertEquals(6, expression2.evaluate().getValue(), 0);
+
+        assertThrowable(() -> new MathExpression("r = c + 1"), new IllegalArgumentException("Circular reference detected"));
+    }
+
     private void assertFaultyExpression(String expression, String expectedMessage) {
         assertThrowable(() -> {
             MathExpression mathExpression = new MathExpression(expression);
