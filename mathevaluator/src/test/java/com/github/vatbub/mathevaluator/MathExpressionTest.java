@@ -353,6 +353,12 @@ public class MathExpressionTest {
         Assert.assertEquals(4, expression.evaluate().getValue(), 0);
     }
 
+    @Test
+    public void chainedExpressionRegressionTest() {
+        MathExpression expression = new MathExpression("8+3-5-9");
+        Assert.assertEquals(-3.0, expression.evaluate().getValue(), 0);
+    }
+
     private void assertFaultyExpression(String expression, String expectedMessage) {
         assertThrowable(() -> {
             MathExpression mathExpression = new MathExpression(expression);

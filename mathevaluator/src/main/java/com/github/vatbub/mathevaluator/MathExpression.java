@@ -304,6 +304,8 @@ public class MathExpression extends MathLiteral {
 
         // our expression now only contains numbers and operators
 
+        simplifiedExpression = evaluateConsecutiveUnaryOperators(simplifiedExpression);
+
         while (simplifiedExpression.size() > 1) {
             // find the operator with the highest priority
             int indexOfOperatorWithHighestPriority = Integer.MIN_VALUE;
@@ -316,16 +318,15 @@ public class MathExpression extends MathLiteral {
                     indexOfOperatorWithHighestPriority = i;
                 else {
                     Operator operator = (Operator) literal;
-                    if (operator.getPriority() >= ((Operator) simplifiedExpression.get(indexOfOperatorWithHighestPriority)).getPriority()
+                    if (operator.getPriority() > ((Operator) simplifiedExpression.get(indexOfOperatorWithHighestPriority)).getPriority()
                             || (getOperatorSuperclassPriority(operator) > getOperatorSuperclassPriority((Operator) simplifiedExpression.get(indexOfOperatorWithHighestPriority)) && !isElementANumberOrExpressionOrFunction(simplifiedExpression, i - 1)))
                         indexOfOperatorWithHighestPriority = i;
                 }
             }
 
-            if ((indexOfOperatorWithHighestPriority - 1 < 0 || simplifiedExpression
-                    .get(indexOfOperatorWithHighestPriority - 1) instanceof Operator)
-                    && simplifiedExpression
-                    .get(indexOfOperatorWithHighestPriority) instanceof SingleArgumentOperator) {
+            if ((indexOfOperatorWithHighestPriority - 1 < 0
+                    || simplifiedExpression.get(indexOfOperatorWithHighestPriority - 1) instanceof Operator)
+                    && simplifiedExpression.get(indexOfOperatorWithHighestPriority) instanceof SingleArgumentOperator) {
                 SingleArgumentOperator operator = (SingleArgumentOperator) simplifiedExpression
                         .get(indexOfOperatorWithHighestPriority);
                 Number right = (Number) simplifiedExpression
@@ -355,6 +356,36 @@ public class MathExpression extends MathLiteral {
         }
 
         return (Number) simplifiedExpression.get(0);
+    }
+
+    private List<MathLiteral> evaluateConsecutiveUnaryOperators(List<MathLiteral> simplifiedExpression) {
+        List<MathLiteral> result = new ArrayList<>();
+        List<MathLiteral> copy = new ArrayList<>(simplifiedExpression);
+        List<SingleArgumentOperator> unaryOperators = new ArrayList<>();
+
+        while (!copy.isEmpty()) {
+            MathLiteral nextElement = copy.remove(0);
+            if (nextElement instanceof SingleArgumentOperator) {
+                unaryOperators.add((SingleArgumentOperator) nextElement);
+                continue;
+            }
+
+            if (unaryOperators.isEmpty()) {
+                result.add(nextElement);
+                continue;
+            }
+
+            Number currentValue = (Number) nextElement;
+            while (!unaryOperators.isEmpty()) {
+                SingleArgumentOperator nextOperator = unaryOperators.remove(unaryOperators.size() - 1);
+                currentValue = nextOperator.evaluate(currentValue);
+            }
+
+            result.add(new OperatorImplementations.AddOperator());
+            result.add(currentValue);
+        }
+
+        return result;
     }
 
     private int getOperatorSuperclassPriority(Operator operator) {
