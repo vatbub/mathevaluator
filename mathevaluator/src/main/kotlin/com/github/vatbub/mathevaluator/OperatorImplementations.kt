@@ -21,17 +21,17 @@ import kotlin.math.pow
  * See the License for the specific language governing permissions and
  * limitations under the License.
  * #L%
- */ /**
+ */
+
+/**
  * Built-in operators
  */
-object OperatorImplementations {
-    fun registerBuiltInOperators() {
-        registerOperator(AddOperator::class.java)
-        registerOperator(SubtractOperator::class.java)
-        registerOperator(DivideOperator::class.java)
-        registerOperator(MultiplyOperator::class.java)
-        registerOperator(PowerOperator::class.java)
-    }
+fun registerBuiltInOperators() {
+    registerOperator(AddOperator::class.java)
+    registerOperator(SubtractOperator::class.java)
+    registerOperator(DivideOperator::class.java)
+    registerOperator(MultiplyOperator::class.java)
+    registerOperator(PowerOperator::class.java)
 }
 
 class AddOperator : SingleArgumentOperator("+", 0) {

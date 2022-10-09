@@ -35,19 +35,12 @@ data class RuntimeConstant(val name: String) : MathLiteral() {
 object RuntimeConstantRegistry {
     internal val values = mutableMapOf<String, MathExpression>()
 
-    @JvmStatic
-    fun registerRuntimeConstant(name: String, expression: MathExpression) {
+    internal fun registerRuntimeConstant(name: String, expression: MathExpression) {
         deregisterRuntimeConstant(name)
         values[name] = expression
     }
 
-    @JvmStatic
-    fun deregisterRuntimeConstant(runtimeConstant: RuntimeConstant): Boolean {
-        return deregisterRuntimeConstant(runtimeConstant.name)
-    }
-
-    @JvmStatic
-    fun deregisterRuntimeConstant(constantName: String): Boolean {
+    private fun deregisterRuntimeConstant(constantName: String): Boolean {
         return values.remove(constantName) != null
     }
 }

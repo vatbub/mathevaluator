@@ -19,8 +19,6 @@
  */
 package com.github.vatbub.mathevaluator
 
-import com.github.vatbub.mathevaluator.ConstantImplementations.registerBuiltInConstants
-
 /**
  * Represents any mathematical item. A literal can be an [Operator], a [MathNumber] or a [MathFunction].
  * A [MathExpression] is a collection of [MathLiteral]s but it's also a [MathLiteral] itself
@@ -94,8 +92,8 @@ abstract class MathLiteral {
         }
 
         private fun registerBuiltIns() {
-            OperatorImplementations.registerBuiltInOperators()
-            FunctionImplementations.registerBuiltInFunctions()
+            registerBuiltInOperators()
+            registerBuiltInFunctions()
             registerBuiltInConstants()
         }
     }

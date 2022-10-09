@@ -60,14 +60,4 @@ class NumberTest {
             assertEquals(input.toString(), input.toMathLiteral().toString())
         }
     }
-
-    @Test
-    fun isParsableTest() {
-        val inputs = listOf("687.4", "623,9", "*9653", "65467ü", "468.1e10", "134f")
-        val expected = listOf(true, false, false, false, true, true)
-        inputs.indices.forEach { i ->
-            println("Testing string: \"" + inputs[i] + "\"")
-            assertEquals(expected[i], MathNumber.isParsableDouble(inputs[i]))
-        }
-    }
 }

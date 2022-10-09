@@ -22,12 +22,9 @@ package com.github.vatbub.mathevaluator
 /**
  * Built-in constants
  */
-object ConstantImplementations {
-    @JvmStatic
-    fun registerBuiltInConstants() {
-        MathLiteral.registerConstant(PiConstant::class.java)
-        MathLiteral.registerConstant(EConstant::class.java)
-    }
+fun registerBuiltInConstants() {
+    MathLiteral.registerConstant(PiConstant::class.java)
+    MathLiteral.registerConstant(EConstant::class.java)
 }
 
 /**

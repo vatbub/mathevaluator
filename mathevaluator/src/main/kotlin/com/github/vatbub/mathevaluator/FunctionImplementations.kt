@@ -21,18 +21,18 @@ import kotlin.math.*
  * See the License for the specific language governing permissions and
  * limitations under the License.
  * #L%
- */ /**
+ */
+
+/**
  * Built-in functions
  */
-object FunctionImplementations {
-    fun registerBuiltInFunctions() {
-        registerFunction(SquareRootFunction::class.java)
-        registerFunction(SineFunction::class.java)
-        registerFunction(CosineFunction::class.java)
-        registerFunction(TangentFunction::class.java)
-        registerFunction(CotangentFunction::class.java)
-        registerFunction(FactorialFunction::class.java)
-    }
+fun registerBuiltInFunctions() {
+    registerFunction(SquareRootFunction::class.java)
+    registerFunction(SineFunction::class.java)
+    registerFunction(CosineFunction::class.java)
+    registerFunction(TangentFunction::class.java)
+    registerFunction(CotangentFunction::class.java)
+    registerFunction(FactorialFunction::class.java)
 }
 
 /**
