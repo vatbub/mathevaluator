@@ -58,11 +58,11 @@
     </parent>
 
     <dependencies>
-        <!-- <dependency>
-             <groupId>com.github.vatbub</groupId>
-             <artifactId>commandlineUserPromptProcessor</artifactId>
-             <version>1.2-SNAPSHOT</version>
-         </dependency> -->
+        <dependency>
+            <groupId>com.github.vatbub</groupId>
+            <artifactId>commandlineUserPromptProcessor</artifactId>
+            <version>2.0-SNAPSHOT</version>
+        </dependency>
         <dependency>
             <groupId>com.github.vatbub</groupId>
             <artifactId>math-evaluator</artifactId>
@@ -74,7 +74,7 @@
         <maven.build.timestamp.format>yyyyMMddHHmmss</maven.build.timestamp.format>
         <gitRepoName>mathevaluator</gitRepoName>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <mainClass>com.github.vatbub.mathevaluator.sample.Main</mainClass>
+        <mainClass>com.github.vatbub.mathevaluator.sample.MainKt</mainClass>
     </properties>
 
     <build>
