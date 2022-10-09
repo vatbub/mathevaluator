@@ -32,8 +32,8 @@ The lib takes string which follows the above rules, parses it and computes the r
 After compiling, you can use the lib like so:
 
 ```java
-MathExpression expression=new MathExpression("(5+10)*4/5*(2+2)");
-        double result=expression.evaluate().getValue();
+MathExpression expression = new MathExpression("(5+10)*4/5*(2+2)");
+double result=expression.evaluate().getValue();
 ```
 
 ```kotlin
