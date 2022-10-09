@@ -74,7 +74,7 @@
         <maven.build.timestamp.format>yyyyMMddHHmmss</maven.build.timestamp.format>
         <gitRepoName>mathevaluator</gitRepoName>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <mainClass>com.github.vatbub.mathevaluator.sample.MainKt</mainClass>
+        <mainClass>com.github.vatbub.mathevaluator.sample.KotlinSampleKt</mainClass>
     </properties>
 
     <build>

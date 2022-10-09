@@ -44,15 +44,6 @@ abstract class MathLiteral {
         }
 
         @JvmStatic
-        @Deprecated(
-            "Use RuntimeConstantRegistry",
-            ReplaceWith("RuntimeConstantRegistry.registerRuntimeConstant(runtimeConstant)")
-        )
-        fun registerRuntimeConstant(runtimeConstant: RuntimeConstant, mathExpression: MathExpression) {
-            RuntimeConstantRegistry.registerRuntimeConstant(runtimeConstant.name, mathExpression)
-        }
-
-        @JvmStatic
         fun deregisterOperator(operator: Class<out Operator?>): Boolean {
             return operators.remove(operator)
         }
@@ -65,25 +56,6 @@ abstract class MathLiteral {
         @JvmStatic
         fun deregisterConstant(constant: Class<out Constant?>): Boolean {
             return constants.remove(constant)
-        }
-
-        @Suppress("DEPRECATION")
-        @JvmStatic
-        @Deprecated(
-            "Use RuntimeConstantRegistry",
-            ReplaceWith("RuntimeConstantRegistry.runtimeConstant(constantName)")
-        )
-        fun deregisterRuntimeConstant(runtimeConstant: RuntimeConstant): Boolean {
-            return deregisterRuntimeConstant(runtimeConstant.name)
-        }
-
-        @JvmStatic
-        @Deprecated(
-            "Use RuntimeConstantRegistry",
-            ReplaceWith("RuntimeConstantRegistry.deregisterRuntimeConstant(constantName)")
-        )
-        fun deregisterRuntimeConstant(constantName: String): Boolean {
-            return RuntimeConstantRegistry.deregisterRuntimeConstant(constantName)
         }
 
         /**

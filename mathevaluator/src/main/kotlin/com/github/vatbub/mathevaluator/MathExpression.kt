@@ -26,7 +26,6 @@ class MathExpression(
      *
      * @param expression The expression to parse
      */
-    @Deprecated("Use extension method instead", ReplaceWith("expression.toMathExpression()"))
     constructor(expression: String) : this(expression.toMathExpression().expression)
 
     /**

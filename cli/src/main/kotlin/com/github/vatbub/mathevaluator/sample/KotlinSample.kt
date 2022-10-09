@@ -25,6 +25,8 @@ import com.github.vatbub.mathevaluator.toMathExpression
 const val exitInput = "exit"
 
 fun main() {
+    println("Math evaluator (Kotlin sample)")
+
     while (true) {
         val prompt = Prompt(
             "Please enter your math expression (Hit Ctrl+C or type 'exit' to quit the program)",

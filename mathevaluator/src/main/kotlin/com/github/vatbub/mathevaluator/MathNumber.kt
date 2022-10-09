@@ -6,7 +6,6 @@ import java.util.regex.Pattern
  * Wrapper for a double that extends the [MathLiteral] class
  */
 data class MathNumber
-@Deprecated("Use extension function", ReplaceWith("value.toMathLiteral()"))
 constructor(val value: Double = 0.0) : MathLiteral() {
 
     override fun toString(): String = formulaRepresentation
@@ -54,5 +53,4 @@ constructor(val value: Double = 0.0) : MathLiteral() {
     }
 }
 
-@Suppress("DEPRECATION")
-internal fun Double.toMathLiteral() = MathNumber(this)
+fun Double.toMathLiteral() = MathNumber(this)
