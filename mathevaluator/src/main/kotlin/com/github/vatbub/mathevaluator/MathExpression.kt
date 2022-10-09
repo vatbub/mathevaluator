@@ -43,6 +43,8 @@ class MathExpression(
     /**
      * Parses the specified term and returns its object representation
      *
+     * Note: If you are using Kotlin, you might prefer this extension: [String.toMathExpression]
+     *
      * @param expression The expression to parse
      */
     constructor(expression: String) : this(expression.toMathExpression().expression)
