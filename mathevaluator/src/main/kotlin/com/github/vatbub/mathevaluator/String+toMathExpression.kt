@@ -69,7 +69,7 @@ fun String.toMathExpression(): MathExpression {
                     result.addAndResolveImplicitMultiplication(pendingFunction!!)
                     pendingFunction = null
                 } else {
-                    // We just finished a sub-expression
+                    // We just finished a nested expression (aka parenthesis)
                     result.addAndResolveImplicitMultiplication(
                         parseBuffer.toString().toMathExpression()
                     )
@@ -77,9 +77,11 @@ fun String.toMathExpression(): MathExpression {
                 parseBuffer = StringBuffer()
             }
         } else if (openBrackets > 0) {
+            // We are in the middle of parenthesis, add them to the buffer and parse the buffer once the closing 
+            // bracket is found
             parseBuffer.append(character)
         } else if (pendingFunction != null) {
-            // pending function is null but openBrackets == 0 --> functions
+            // pending function is not null but openBrackets == 0 --> functions
             // require parenthesis to declare arguments
             throw IllegalArgumentException("Function names must be followed by parenthesis to declare the function parameters")
         } else {
@@ -94,9 +96,30 @@ fun String.toMathExpression(): MathExpression {
     return MathExpression(result)
 }
 
+/**
+ * Adds the next character to the buffer and tries to parse the buffer.
+ * If the buffer was parsable as a double before adding the character but becomes unparsable after adding it,
+ * the double is parsed first and added to the [result] list. The buffer will then be cleared first before
+ * adding the new character.
+ *
+ * Then, the parser tries to parse the contents of the buffer. If it succeeds, the buffer is cleared and the result
+ * is added to [result]. If it detects a function name, the buffer is cleared and the function is returned as the
+ * return value of this function.
+ *
+ * Note: Since the function parameters are in parenthesis behind the function name, the parser cannot yet parse the
+ * function parameters and thus returns the function in a pending state, such that the caller can add the parsed
+ * parameters once the parser has parsed them.
+ *
+ * @param parseBuffer The current parse buffer. This will be modified by this function.
+ * @param result The current list of parsed [MathLiteral]s. This will be modified by this function.
+ * @param nextCharacter The character that is currently being parsed. The function will add this letter to the
+ * buffer and try to parse the buffer (see above)
+ *
+ * @return The instance of a [MathFunction] if the name of a function is detected.
+ */
 private fun parseCurrentBuffer(
     parseBuffer: StringBuffer,
-    res: MutableList<MathLiteral>,
+    result: MutableList<MathLiteral>,
     nextCharacter: String
 ): MathFunction? {
     if (parseBuffer.toString().toDoubleOrNull() != null &&
@@ -105,7 +128,7 @@ private fun parseCurrentBuffer(
         // parseBuffer was previously parsable as a double but when
         // adding the current char, it becomes unparsable --> we
         // need to parse the number now
-        res.add(parseBuffer.toString().toDouble().toMathLiteral())
+        result.add(parseBuffer.toString().toDouble().toMathLiteral())
         parseBuffer.setLength(0)
     }
     parseBuffer.append(nextCharacter)
@@ -115,7 +138,7 @@ private fun parseCurrentBuffer(
         .map { it.getDeclaredConstructor().newInstance()!! }
         .firstOrNull { parseBuffer.toString() == it.formulaRepresentation }
         ?.let { constant ->
-            res.addAndResolveImplicitMultiplication(constant)
+            result.addAndResolveImplicitMultiplication(constant)
             parseBuffer.setLength(0)
             return null
         }
@@ -126,7 +149,7 @@ private fun parseCurrentBuffer(
         .keys
         .firstOrNull()
         ?.let { key ->
-            res.addAndResolveImplicitMultiplication(RuntimeConstant(key))
+            result.addAndResolveImplicitMultiplication(RuntimeConstant(key))
             parseBuffer.setLength(0)
             return null
         }
@@ -135,9 +158,9 @@ private fun parseCurrentBuffer(
     operators
         .map { it.getDeclaredConstructor().newInstance() }
         .filter { parseBuffer.toString() == it.formulaRepresentation }
-        .firstOrNull { it is SingleArgumentOperator || res.isLastElementANumberOrExpressionOrFunction() }
+        .firstOrNull { it is SingleArgumentOperator || result.isLastElementANumberOrExpressionOrFunction() }
         ?.let { operator ->
-            res.addAndResolveImplicitMultiplication(operator)
+            result.addAndResolveImplicitMultiplication(operator)
             parseBuffer.setLength(0)
             return null
         }
